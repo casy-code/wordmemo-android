@@ -78,6 +78,6 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.5.2'
     androidTestImplementation 'androidx.room:room-testing:2.6.1'
     androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3'
-    androidTestImplementation 'kotlin-test:kotlin-test:1.9.22'
+    androidTestImplementation 'org.jetbrains.kotlin:kotlin-test:1.9.0'
     androidTestImplementation 'androidx.fragment:fragment-testing:1.6.2'
 }
