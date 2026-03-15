@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/learning_fragment">
+
+    <fragment
+        android:id="@+id/learning_fragment"
+        android:name="com.wordmemo.ui.fragment.LearningFragment"
+        android:label="Learning"
+        tools:layout="@layout/fragment_learning" />
+
+    <fragment
+        android:id="@+id/review_fragment"
+        android:name="com.wordmemo.ui.fragment.ReviewFragment"
+        android:label="Review"
+        tools:layout="@layout/fragment_review" />
+
+    <fragment
+        android:id="@+id/statistics_fragment"
+        android:name="com.wordmemo.ui.fragment.StatisticsFragment"
+        android:label="Statistics"
+        tools:layout="@layout/fragment_statistics" />
+
+    <fragment
+        android:id="@+id/settings_fragment"
+        android:name="com.wordmemo.ui.fragment.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings" />
+
+</navigation>

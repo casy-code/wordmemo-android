@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WordMemo</string>
+    <string name="learning">Learning</string>
+    <string name="review">Review</string>
+    <string name="statistics">Statistics</string>
+    <string name="settings">Settings</string>
+</resources>
