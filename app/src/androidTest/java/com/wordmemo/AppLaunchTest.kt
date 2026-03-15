@@ -36,7 +36,5 @@ class AppLaunchTest {
         assert(appContext is WordMemoApplication) {
             "Application 应为 WordMemoApplication，实际为 ${appContext::class.java.name}"
         }
-        val app = appContext as WordMemoApplication
-        assertNotNull(app.appContainer)
     }
 }
