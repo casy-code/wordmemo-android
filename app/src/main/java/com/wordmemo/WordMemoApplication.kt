@@ -12,10 +12,11 @@ import java.util.Locale
 
 /**
  * 应用入口，持有全局依赖容器
+ * 初始化失败时 appContainer 为 null，Fragment 会显示错误提示而非崩溃
  */
 class WordMemoApplication : Application() {
 
-    lateinit var appContainer: AppContainer
+    var appContainer: AppContainer? = null
         private set
 
     override fun onCreate() {
@@ -26,7 +27,7 @@ class WordMemoApplication : Application() {
         } catch (e: Exception) {
             Log.e(TAG, "AppContainer 初始化失败", e)
             writeCrashLog(e)
-            throw e
+            // 不抛出，让应用继续运行，Fragment 会显示错误提示
         }
     }
 

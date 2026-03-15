@@ -27,32 +27,48 @@ class LearningFragment : Fragment() {
     private var _binding: FragmentLearningBinding? = null
     private val binding get() = _binding!!
     
-    private lateinit var viewModel: LearnViewModel
+    private var viewModel: LearnViewModel? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentLearningBinding.inflate(inflater, container, false)
-        return binding.root
+        return try {
+            _binding = FragmentLearningBinding.inflate(inflater, container, false)
+            binding.root
+        } catch (e: Exception) {
+            android.widget.TextView(requireContext()).apply {
+                text = "页面加载失败"
+                setPadding(48, 48, 48, 48)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupViewModel()
-        setupUI()
-        observeViewModel()
-        
-        // 初始化学习（词库 ID 为 1，实际应该从参数传入）
-        viewModel.initializeLearning(1)
+        if (_binding == null) return
+        try {
+            val app = requireContext().applicationContext as? WordMemoApplication
+            val container = app?.appContainer
+            if (app == null || container == null) {
+                showError("应用初始化失败，请重启")
+                return
+            }
+            val factory = LearnViewModelFactory(container.learningUseCase)
+            viewModel = ViewModelProvider(this, factory).get(LearnViewModel::class.java)
+            setupUI()
+            observeViewModel()
+            viewModel?.initializeLearning(1)
+        } catch (e: Exception) {
+            showError("加载失败: ${e.message ?: "未知错误"}")
+        }
     }
 
-    private fun setupViewModel() {
-        val app = requireContext().applicationContext as? WordMemoApplication
-            ?: throw IllegalStateException("Application 必须是 WordMemoApplication，请检查 AndroidManifest")
-        val factory = LearnViewModelFactory(app.appContainer.learningUseCase)
-        viewModel = ViewModelProvider(this, factory).get(LearnViewModel::class.java)
+    private fun showError(message: String) {
+        try {
+            binding.root.findViewById<TextView>(R.id.tv_content)?.text = message
+        } catch (_: Exception) { }
     }
 
     private fun setupUI() {

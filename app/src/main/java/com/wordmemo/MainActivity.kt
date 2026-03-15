@@ -13,11 +13,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        val navView: BottomNavigationView = binding.navView
-        val navController = findNavController(R.id.nav_host_fragment)
-        navView.setupWithNavController(navController)
+        try {
+            binding = ActivityMainBinding.inflate(layoutInflater)
+            setContentView(binding.root)
+            val navView: BottomNavigationView = binding.navView
+            val navController = findNavController(R.id.nav_host_fragment)
+            navView.setupWithNavController(navController)
+        } catch (e: Exception) {
+            setContentView(android.widget.TextView(this).apply {
+                text = "启动失败，请重启应用\n\n${e.message}"
+                setPadding(48, 48, 48, 48)
+            })
+        }
     }
 }
