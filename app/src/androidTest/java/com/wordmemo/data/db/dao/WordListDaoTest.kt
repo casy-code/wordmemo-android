@@ -38,8 +38,7 @@ class WordListDaoTest {
         val wordList = WordList(
             name = "CET-4",
             description = "大学英语四级词汇",
-            wordCount = 0,
-            createdAt = System.currentTimeMillis()
+            type = "preset"
         )
         
         val id = wordListDao.insert(wordList)
@@ -54,9 +53,9 @@ class WordListDaoTest {
     @Test
     fun testInsertMultipleWordLists() = runBlocking {
         val lists = listOf(
-            WordList(name = "CET-4", description = "四级", wordCount = 0),
-            WordList(name = "CET-6", description = "六级", wordCount = 0),
-            WordList(name = "GRE", description = "GRE", wordCount = 0)
+            WordList(name = "CET-4", description = "四级"),
+            WordList(name = "CET-6", description = "六级"),
+            WordList(name = "GRE", description = "GRE")
         )
         
         wordListDao.insertAll(lists)
@@ -67,20 +66,13 @@ class WordListDaoTest {
 
     @Test
     fun testUpdateWordList() = runBlocking {
-        val wordList = WordList(
-            id = 1,
-            name = "CET-4",
-            description = "四级",
-            wordCount = 0
-        )
+        val wordList = WordList(name = "CET-4", description = "四级")
+        val id = wordListDao.insert(wordList)
         
-        wordListDao.insert(wordList)
-        
-        val updated = wordList.copy(wordCount = 100, description = "四级词汇（已更新）")
+        val updated = wordList.copy(id = id.toInt(), description = "四级词汇（已更新）")
         wordListDao.update(updated)
         
-        val retrieved = wordListDao.getWordListById(1)
-        assertEquals(100, retrieved?.wordCount)
+        val retrieved = wordListDao.getWordListById(id)
         assertEquals("四级词汇（已更新）", retrieved?.description)
     }
 
@@ -88,12 +80,11 @@ class WordListDaoTest {
     fun testDeleteWordList() = runBlocking {
         val wordList = WordList(
             name = "Temp",
-            description = "临时词库",
-            wordCount = 0
+            description = "临时词库"
         )
         
         val id = wordListDao.insert(wordList)
-        wordListDao.delete(wordList)
+        wordListDao.delete(wordList.copy(id = id.toInt()))
         
         val retrieved = wordListDao.getWordListById(id)
         assertNull(retrieved)
@@ -103,8 +94,7 @@ class WordListDaoTest {
     fun testGetWordListByName() = runBlocking {
         val wordList = WordList(
             name = "TOEFL",
-            description = "托福词汇",
-            wordCount = 0
+            description = "托福词汇"
         )
         
         wordListDao.insert(wordList)
@@ -117,9 +107,9 @@ class WordListDaoTest {
     @Test
     fun testGetAllWordLists() = runBlocking {
         val lists = listOf(
-            WordList(name = "List1", description = "描述1", wordCount = 10),
-            WordList(name = "List2", description = "描述2", wordCount = 20),
-            WordList(name = "List3", description = "描述3", wordCount = 30)
+            WordList(name = "List1", description = "描述1"),
+            WordList(name = "List2", description = "描述2"),
+            WordList(name = "List3", description = "描述3")
         )
         
         wordListDao.insertAll(lists)
@@ -131,8 +121,8 @@ class WordListDaoTest {
     @Test
     fun testDeleteAll() = runBlocking {
         val lists = listOf(
-            WordList(name = "List1", description = "描述1", wordCount = 10),
-            WordList(name = "List2", description = "描述2", wordCount = 20)
+            WordList(name = "List1", description = "描述1"),
+            WordList(name = "List2", description = "描述2")
         )
         
         wordListDao.insertAll(lists)
@@ -145,8 +135,8 @@ class WordListDaoTest {
     @Test
     fun testGetWordListsFlow() = runBlocking {
         val lists = listOf(
-            WordList(name = "List1", description = "描述1", wordCount = 10),
-            WordList(name = "List2", description = "描述2", wordCount = 20)
+            WordList(name = "List1", description = "描述1"),
+            WordList(name = "List2", description = "描述2")
         )
         
         wordListDao.insertAll(lists)

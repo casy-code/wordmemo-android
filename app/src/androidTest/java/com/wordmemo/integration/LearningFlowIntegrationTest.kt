@@ -63,12 +63,11 @@ class LearningFlowIntegrationTest {
         // 1. 创建词库
         val wordList = WordList(
             name = "Test List",
-            description = "Test Description",
-            wordCount = 0
+            description = "Test Description"
         )
         val listId = wordListDao.insert(wordList).toInt()
 
-        // 2. 添加单词
+        // 2. 添加单词并关联到词库
         val words = listOf(
             Word(content = "hello", translation = "你好", difficulty = 1),
             Word(content = "world", translation = "世界", difficulty = 1),
@@ -76,9 +75,12 @@ class LearningFlowIntegrationTest {
         )
         wordDao.insertAll(words)
 
-        // 3. 获取单词列表
+        // 3. 将单词关联到词库
         val allWords = wordDao.getAllWords()
         assertEquals(3, allWords.size)
+        database.wordListItemDao().insertAll(
+            allWords.map { com.wordmemo.data.entity.WordListItem(wordId = it.id, listId = listId) }
+        )
 
         // 4. 记录学习反馈
         val word1 = allWords[0]

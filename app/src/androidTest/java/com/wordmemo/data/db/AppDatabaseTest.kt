@@ -7,7 +7,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.wordmemo.data.entity.LearningRecord
 import com.wordmemo.data.entity.Word
 import com.wordmemo.data.entity.WordList
-import com.wordmemo.data.entity.WordListItem
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -59,7 +58,7 @@ class AppDatabaseTest {
             description = "大学英语四级词汇",
             type = "preset"
         )
-        val listId = wordListDao.insert(wordList)
+        val listId = wordListDao.insert(wordList).toInt()
         assertEquals(1, listId)
 
         // 2. 创建单词
@@ -81,6 +80,7 @@ class AppDatabaseTest {
 
         // 4. 创建学习记录
         val now = System.currentTimeMillis()
+        val listIdLong = listId.toLong()
         val records = listOf(
             LearningRecord(
                 wordId = word1.id,
@@ -108,10 +108,10 @@ class AppDatabaseTest {
             )
         )
         learningRecordDao.insertAll(records)
-        assertEquals(3, learningRecordDao.getRecordCount(listId))
+        assertEquals(3, learningRecordDao.getRecordCount(listId.toLong()))
 
         // 5. 查询待复习单词
-        val dueRecords = learningRecordDao.getDueRecords(listId, now)
+        val dueRecords = learningRecordDao.getDueRecords(listId.toLong(), now)
         assertEquals(1, dueRecords.size)
 
         // 6. 更新学习记录
@@ -125,7 +125,7 @@ class AppDatabaseTest {
         // 7. 查询今日复习数
         val startOfDay = now - (now % 86400000)
         val endOfDay = startOfDay + 86400000
-        val todayCount = learningRecordDao.getTodayReviewCount(listId, startOfDay, endOfDay)
+        val todayCount = learningRecordDao.getTodayReviewCount(listId.toLong(), startOfDay, endOfDay)
         assertEquals(1, todayCount)
 
         // 8. 验证数据完整性
@@ -135,7 +135,7 @@ class AppDatabaseTest {
         val allLists = wordListDao.getAllWordLists()
         assertEquals(1, allLists.size)
 
-        val allRecords = learningRecordDao.getRecentRecords(listId, 10)
+        val allRecords = learningRecordDao.getRecentRecords(listIdLong, 10)
         assertEquals(3, allRecords.size)
     }
 
@@ -180,8 +180,8 @@ class AppDatabaseTest {
         learningRecordDao.insertAll(records)
 
         // 验证每个词库的学习记录数
-        assertEquals(2, learningRecordDao.getRecordCount(list1.id))
-        assertEquals(1, learningRecordDao.getRecordCount(list2.id))
+        assertEquals(2, learningRecordDao.getRecordCount(list1!!.id.toLong()))
+        assertEquals(1, learningRecordDao.getRecordCount(list2!!.id.toLong()))
 
         // 验证预设词库数量
         val presetLists = wordListDao.getWordListsByType("preset")
@@ -206,8 +206,8 @@ class AppDatabaseTest {
 
         // 创建学习记录
         val record = LearningRecord(
-            wordId = wordId,
-            listId = listId,
+            wordId = wordId.toInt(),
+            listId = listId.toInt(),
             quality = 4,
             nextReviewDate = System.currentTimeMillis()
         )
@@ -217,7 +217,7 @@ class AppDatabaseTest {
         assertEquals(1, learningRecordDao.getRecordCount(listId))
 
         // 删除词库
-        wordListDao.delete(wordList.copy(id = listId))
+        wordListDao.delete(wordList.copy(id = listId.toInt()))
 
         // 验证级联删除
         assertEquals(0, learningRecordDao.getRecordCount(listId))

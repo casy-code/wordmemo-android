@@ -61,6 +61,12 @@ interface LearningRecordDao {
     @Query("SELECT * FROM learning_records WHERE listId = :listId ORDER BY reviewedAt DESC LIMIT :limit")
     suspend fun getRecentRecords(listId: Long, limit: Int): List<LearningRecord>
 
+    @Query("SELECT * FROM learning_records WHERE listId = :listId ORDER BY reviewedAt DESC")
+    suspend fun getRecordsByListId(listId: Int): List<LearningRecord>
+
+    @Query("SELECT * FROM learning_records ORDER BY reviewedAt DESC")
+    suspend fun getAllRecords(): List<LearningRecord>
+
     @Query("DELETE FROM learning_records WHERE listId = :listId")
     suspend fun deleteByListId(listId: Long)
 

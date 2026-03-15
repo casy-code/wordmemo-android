@@ -36,6 +36,7 @@ android {
     buildFeatures {
         viewBinding true
     }
+
 }
 
 dependencies {
@@ -80,4 +81,5 @@ dependencies {
     androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3'
     androidTestImplementation 'org.jetbrains.kotlin:kotlin-test:1.9.0'
     androidTestImplementation 'androidx.fragment:fragment-testing:1.6.2'
+    androidTestImplementation 'androidx.arch.core:core-testing:2.2.0'
 }

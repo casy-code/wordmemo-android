@@ -11,8 +11,10 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.wordmemo.R
+import com.wordmemo.WordMemoApplication
 import com.wordmemo.databinding.FragmentStatisticsBinding
 import com.wordmemo.ui.viewmodel.StatsViewModel
+import com.wordmemo.ui.viewmodel.StatsViewModelFactory
 
 /**
  * 统计页面 Fragment
@@ -46,9 +48,9 @@ class StatisticsFragment : Fragment() {
     }
 
     private fun setupViewModel() {
-        // TODO: 通过 ViewModelFactory 注入 LearningUseCase
-        // viewModel = ViewModelProvider(this, StatsViewModelFactory(learningUseCase))
-        //     .get(StatsViewModel::class.java)
+        val app = requireContext().applicationContext as WordMemoApplication
+        val factory = StatsViewModelFactory(app.appContainer.learningUseCase)
+        viewModel = ViewModelProvider(this, factory).get(StatsViewModel::class.java)
     }
 
     private fun setupUI() {

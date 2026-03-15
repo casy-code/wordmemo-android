@@ -3,6 +3,7 @@ package com.wordmemo.ui.fragment
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.wordmemo.R
+import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -10,15 +11,20 @@ import org.junit.runner.RunWith
 class LearningFragmentTest {
 
     @Test
-    fun testLearningFragmentLaunches() {
-        launchFragmentInContainer<LearningFragment>()
+    fun learningFragmentLaunchesWithoutCrash() {
+        // 若 ViewModel 未初始化等导致崩溃，launchFragmentInContainer 或 onFragment 会抛出异常
+        val scenario = launchFragmentInContainer<LearningFragment>()
+        scenario.onFragment { fragment ->
+            assertNotNull(fragment.view)
+        }
     }
 
     @Test
-    fun testLearningFragmentViewsCreated() {
+    fun learningFragmentShowsContent() {
         val scenario = launchFragmentInContainer<LearningFragment>()
         scenario.onFragment { fragment ->
-            assert(fragment.view != null)
+            assertNotNull(fragment.view)
+            assertNotNull(fragment.requireView().rootView)
         }
     }
 }

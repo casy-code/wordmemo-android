@@ -57,7 +57,6 @@ class DataPersistenceIntegrationTest {
         val wordList = WordList(
             name = "Persistence Test",
             description = "Test Description",
-            wordCount = 100,
             type = "preset"
         )
 
@@ -69,15 +68,15 @@ class DataPersistenceIntegrationTest {
         val retrieved = wordListDao.getWordListById(id)
         assertNotNull(retrieved)
         assertEquals("Persistence Test", retrieved?.name)
-        assertEquals(100, retrieved?.wordCount)
+        assertEquals("Test Description", retrieved?.description)
 
         // 4. 更新词库
-        val updated = retrieved!!.copy(wordCount = 150)
+        val updated = retrieved!!.copy(description = "Updated Description")
         wordListDao.update(updated)
 
         // 5. 验证更新
         val updated2 = wordListDao.getWordListById(id)
-        assertEquals(150, updated2?.wordCount)
+        assertEquals("Updated Description", updated2?.description)
     }
 
     @Test
@@ -131,7 +130,7 @@ class DataPersistenceIntegrationTest {
         assertEquals(1, retrieved?.wordId)
         assertEquals(4, retrieved?.quality)
         assertEquals(3, retrieved?.interval)
-        assertEquals(2.6, retrieved?.easeFactor, 0.01)
+        assertEquals(2.6, retrieved?.easeFactor ?: 0.0, 0.01)
     }
 
     @Test
@@ -204,7 +203,7 @@ class DataPersistenceIntegrationTest {
     fun testBulkOperations() = runBlocking {
         // 1. 批量创建词库
         val wordLists = (1..10).map { i ->
-            WordList(name = "List$i", description = "Description$i", wordCount = i * 10)
+            WordList(name = "List$i", description = "Description$i")
         }
         wordListDao.insertAll(wordLists)
 
@@ -306,6 +305,6 @@ class DataPersistenceIntegrationTest {
         val retrieved = learningRecordDao.getRecordById(id)
         assertEquals(5, retrieved?.quality)
         assertEquals(7, retrieved?.interval)
-        assertEquals(2.8, retrieved?.easeFactor, 0.01)
+        assertEquals(2.8, retrieved?.easeFactor ?: 0.0, 0.01)
     }
 }

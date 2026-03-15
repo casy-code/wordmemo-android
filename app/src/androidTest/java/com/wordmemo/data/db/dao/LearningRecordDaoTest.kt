@@ -91,10 +91,10 @@ class LearningRecordDaoTest {
         val updated = record.copy(quality = 5, interval = 7, easeFactor = 2.8)
         learningRecordDao.update(updated)
         
-        val retrieved = learningRecordDao.getRecordById(1)
+        val retrieved = learningRecordDao.getRecordById(1L)
         assertEquals(5, retrieved?.quality)
         assertEquals(7, retrieved?.interval)
-        assertEquals(2.8, retrieved?.easeFactor, 0.01)
+        assertEquals(2.8, retrieved?.easeFactor ?: 0.0, 0.01)
     }
 
     @Test
@@ -110,7 +110,7 @@ class LearningRecordDaoTest {
         )
         
         val id = learningRecordDao.insert(record)
-        learningRecordDao.delete(record)
+        learningRecordDao.delete(record.copy(id = id.toInt()))
         
         val retrieved = learningRecordDao.getRecordById(id)
         assertNull(retrieved)

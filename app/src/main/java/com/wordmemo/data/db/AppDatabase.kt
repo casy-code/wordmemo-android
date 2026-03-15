@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.wordmemo.data.db.dao.LearningRecordDao
 import com.wordmemo.data.db.dao.WordDao
+import com.wordmemo.data.db.dao.WordListItemDao
 import com.wordmemo.data.db.dao.WordListDao
 import com.wordmemo.data.entity.LearningRecord
 import com.wordmemo.data.entity.Word
@@ -26,6 +27,7 @@ import com.wordmemo.data.entity.WordListItem
 abstract class AppDatabase : RoomDatabase() {
     abstract fun wordDao(): WordDao
     abstract fun wordListDao(): WordListDao
+    abstract fun wordListItemDao(): WordListItemDao
     abstract fun learningRecordDao(): LearningRecordDao
 
     companion object {

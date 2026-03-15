@@ -12,8 +12,10 @@ import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.wordmemo.R
+import com.wordmemo.WordMemoApplication
 import com.wordmemo.databinding.FragmentLearningBinding
 import com.wordmemo.ui.viewmodel.LearnViewModel
+import com.wordmemo.ui.viewmodel.LearnViewModelFactory
 
 /**
  * 学习页面 Fragment
@@ -47,9 +49,9 @@ class LearningFragment : Fragment() {
     }
 
     private fun setupViewModel() {
-        // TODO: 通过 ViewModelFactory 注入 LearningUseCase
-        // viewModel = ViewModelProvider(this, LearnViewModelFactory(learningUseCase))
-        //     .get(LearnViewModel::class.java)
+        val app = requireContext().applicationContext as WordMemoApplication
+        val factory = LearnViewModelFactory(app.appContainer.learningUseCase)
+        viewModel = ViewModelProvider(this, factory).get(LearnViewModel::class.java)
     }
 
     private fun setupUI() {

@@ -39,3 +39,7 @@ captures/
 
 # Kotlin/Native
 .kotlin/
+
+# Local artifacts
+ci-artifacts-*/
+app/src/androidTest-disabled/

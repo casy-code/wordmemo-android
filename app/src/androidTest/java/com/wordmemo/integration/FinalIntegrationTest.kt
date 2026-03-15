@@ -62,13 +62,12 @@ class FinalIntegrationTest {
         // 1. 创建词库
         val wordList = WordList(
             name = "CET-4",
-            description = "College English Test Level 4",
-            wordCount = 0
+            description = "College English Test Level 4"
         )
         val listId = wordListDao.insert(wordList).toInt()
         assertTrue(listId > 0)
 
-        // 2. 添加单词
+        // 2. 添加单词并关联到词库
         val words = listOf(
             Word(content = "abandon", translation = "放弃", difficulty = 1),
             Word(content = "ability", translation = "能力", difficulty = 1),
@@ -78,9 +77,13 @@ class FinalIntegrationTest {
         )
         wordDao.insertAll(words)
 
-        // 3. 验证单词已添加
+        // 3. 将单词关联到词库
         val allWords = wordDao.getAllWords()
         assertEquals(5, allWords.size)
+        val wordListItemDao = database.wordListItemDao()
+        allWords.forEach { word ->
+            wordListItemDao.insert(com.wordmemo.data.entity.WordListItem(wordId = word.id, listId = listId))
+        }
 
         // 4. 学习单词
         for (word in allWords) {
@@ -104,9 +107,9 @@ class FinalIntegrationTest {
     fun testMultipleWordListsManagement() = runBlocking {
         // 1. 创建多个词库
         val lists = listOf(
-            WordList(name = "CET-4", description = "四级", wordCount = 0),
-            WordList(name = "CET-6", description = "六级", wordCount = 0),
-            WordList(name = "GRE", description = "GRE", wordCount = 0)
+            WordList(name = "CET-4", description = "四级"),
+            WordList(name = "CET-6", description = "六级"),
+            WordList(name = "GRE", description = "GRE")
         )
         wordListDao.insertAll(lists)
 
