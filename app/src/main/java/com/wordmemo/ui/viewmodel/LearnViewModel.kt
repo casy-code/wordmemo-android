@@ -8,6 +8,8 @@ import com.wordmemo.data.entity.Word
 import com.wordmemo.domain.usecase.LearningStatistics
 import com.wordmemo.domain.usecase.LearningUseCase
 import com.wordmemo.domain.usecase.WordProgress
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 /**
@@ -65,25 +67,25 @@ class LearnViewModel(
     }
 
     /**
-     * 加载词库中的单词
+     * 加载今日待学习单词（排除今日已学习的，切换 tab 后不重置进度）
      */
     private fun loadWords() {
         viewModelScope.launch {
             try {
-                learningUseCase.getAllWordsInList(currentListId).collect { words ->
-                    wordList = words
-                    _totalWords.value = words.size
-                    
-                    if (words.isNotEmpty()) {
-                        currentIndex = 0
-                        _currentWordIndex.value = 0
-                        loadCurrentWord()
-                    } else {
-                        _feedbackMessage.value = "词库中没有单词"
-                        _isLearningComplete.value = true
-                    }
-                    _isLoading.value = false
+                val words = learningUseCase.getWordsToLearnToday(currentListId)
+                wordList = words
+                _totalWords.value = words.size
+
+                if (words.isNotEmpty()) {
+                    currentIndex = 0
+                    _currentWordIndex.value = 0
+                    loadCurrentWord()
+                } else {
+                    val hasWords = learningUseCase.getAllWordsInList(currentListId).map { it.isNotEmpty() }.first()
+                    _feedbackMessage.value = if (hasWords) "今日待学习单词已完成" else "词库中没有单词"
+                    _isLearningComplete.value = true
                 }
+                _isLoading.value = false
             } catch (e: Exception) {
                 _feedbackMessage.value = "加载单词失败: ${e.message}"
                 _isLoading.value = false

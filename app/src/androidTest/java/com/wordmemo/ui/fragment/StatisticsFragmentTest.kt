@@ -58,4 +58,18 @@ class StatisticsFragmentTest {
         onView(withId(R.id.btn_refresh)).check(matches(isDisplayed()))
         onView(withText("刷新统计")).check(matches(isDisplayed()))
     }
+
+    @Test
+    fun statisticsFragmentTodayCardsAreClickable() {
+        val scenario = launchStatisticsFragment()
+        scenario.onFragment { fragment ->
+            assertNotErrorView(fragment)
+            val cardLearning = fragment.requireView().findViewById<View>(R.id.card_today_learning)
+            val cardReview = fragment.requireView().findViewById<View>(R.id.card_today_review)
+            assertNotNull("今日学习卡片应存在", cardLearning)
+            assertNotNull("今日复习卡片应存在", cardReview)
+            assert(cardLearning.isClickable)
+            assert(cardReview.isClickable)
+        }
+    }
 }

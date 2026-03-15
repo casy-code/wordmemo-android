@@ -13,6 +13,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.wordmemo.R
 import com.wordmemo.WordMemoApplication
 import com.wordmemo.databinding.FragmentStatisticsBinding
+import com.wordmemo.ui.dialog.TodayWordsBottomSheet
+import com.wordmemo.ui.dialog.WordDetailDialog
 import com.wordmemo.ui.viewmodel.StatsViewModel
 import com.wordmemo.ui.viewmodel.StatsViewModelFactory
 
@@ -74,6 +76,27 @@ class StatisticsFragment : Fragment() {
         binding.root.findViewById<Button>(R.id.btn_refresh)?.setOnClickListener {
             viewModel?.refreshStatistics()
         }
+        binding.root.findViewById<View>(R.id.card_today_learning)?.setOnClickListener {
+            showTodayWordsSheet()
+        }
+        binding.root.findViewById<View>(R.id.card_today_review)?.setOnClickListener {
+            showTodayWordsSheet()
+        }
+    }
+
+    private fun showTodayWordsSheet() {
+        viewModel?.loadTodayLearnedWords()
+        val sheet = TodayWordsBottomSheet().apply {
+            words = viewModel?.todayLearnedWords?.value ?: emptyList()
+            onWordClick = { word ->
+                dismiss()
+                WordDetailDialog.newInstance(word).show(childFragmentManager, "word_detail")
+            }
+        }
+        viewModel?.todayLearnedWords?.observe(viewLifecycleOwner) { words ->
+            sheet.words = words
+        }
+        sheet.show(parentFragmentManager, "today_words")
     }
 
     private fun observeViewModel() {

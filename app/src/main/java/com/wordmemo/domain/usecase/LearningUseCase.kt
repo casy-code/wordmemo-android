@@ -73,6 +73,27 @@ class LearningUseCase(
     }
 
     /**
+     * 获取今日待学习单词（排除今日已学习的）
+     * 切换 tab 后重新进入时，从上次进度继续
+     */
+    suspend fun getWordsToLearnToday(listId: Int): List<Word> {
+        val allWords = wordDao.getWordsByListId(listId)
+        val todayRecords = learningRecordDao.getTodayLearnedRecords(listId.toLong())
+        val learnedWordIds = todayRecords.map { it.wordId }.toSet()
+        return allWords.filter { it.id !in learnedWordIds }
+    }
+
+    /**
+     * 获取今日已学习/复习的单词列表（按时间倒序）
+     */
+    suspend fun getTodayLearnedWords(listId: Int): List<Word> {
+        val records = learningRecordDao.getTodayLearnedRecords(listId.toLong())
+        return records.mapNotNull { record ->
+            wordDao.getWordById(record.wordId.toLong())
+        }
+    }
+
+    /**
      * 记录学习反馈
      * 
      * @param wordId 单词 ID

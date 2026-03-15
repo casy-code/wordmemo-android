@@ -165,6 +165,41 @@ class LearningUseCaseTest {
     }
 
     @Test
+    fun testGetWordsToLearnToday() {
+        runBlocking {
+            val allWords = listOf(
+                Word(id = 1, content = "a", translation = "一"),
+                Word(id = 2, content = "b", translation = "二"),
+                Word(id = 3, content = "c", translation = "三")
+            )
+            val todayRecords = listOf(
+                LearningRecord(wordId = 1, listId = 1, reviewedAt = System.currentTimeMillis())
+            )
+            whenever(wordDao.getWordsByListId(1)).thenReturn(allWords)
+            whenever(learningRecordDao.getTodayLearnedRecords(1L)).thenReturn(todayRecords)
+            val result = learningUseCase.getWordsToLearnToday(1)
+            assert(result.size == 2)
+            assert(result.any { it.id == 2 })
+            assert(result.any { it.id == 3 })
+        }
+    }
+
+    @Test
+    fun testGetTodayLearnedWords() {
+        runBlocking {
+            val word = Word(id = 1, content = "hello", translation = "你好")
+            val records = listOf(
+                LearningRecord(wordId = 1, listId = 1, reviewedAt = System.currentTimeMillis())
+            )
+            whenever(learningRecordDao.getTodayLearnedRecords(1L)).thenReturn(records)
+            whenever(wordDao.getWordById(1L)).thenReturn(word)
+            val result = learningUseCase.getTodayLearnedWords(1)
+            assert(result.size == 1)
+            assert(result[0].content == "hello")
+        }
+    }
+
+    @Test
     fun testGetLearningProgress() {
         runBlocking {
         val word1 = Word(id = 1, content = "hello", translation = "你好")

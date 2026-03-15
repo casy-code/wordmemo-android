@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.wordmemo.data.entity.Word
 import com.wordmemo.domain.usecase.LearningStatistics
 import com.wordmemo.domain.usecase.LearningUseCase
 import kotlinx.coroutines.launch
@@ -34,6 +35,9 @@ class StatsViewModel(
 
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> = _errorMessage
+
+    private val _todayLearnedWords = MutableLiveData<List<Word>>(emptyList())
+    val todayLearnedWords: LiveData<List<Word>> = _todayLearnedWords
 
     private var currentListId: Int = 0
 
@@ -120,5 +124,20 @@ class StatsViewModel(
      */
     fun clearErrorMessage() {
         _errorMessage.value = ""
+    }
+
+    /**
+     * 加载今日已学习/复习的单词列表
+     */
+    fun loadTodayLearnedWords() {
+        viewModelScope.launch {
+            try {
+                val words = learningUseCase.getTodayLearnedWords(currentListId)
+                _todayLearnedWords.value = words
+            } catch (e: Exception) {
+                _errorMessage.value = "加载失败: ${e.message}"
+                _todayLearnedWords.value = emptyList()
+            }
+        }
     }
 }

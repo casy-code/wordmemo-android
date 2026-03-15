@@ -44,10 +44,11 @@ class LearnViewModelTest {
                 Word(id = 1, content = "hello", translation = "你好"),
                 Word(id = 2, content = "world", translation = "世界")
             )
+            whenever(learningUseCase.getWordsToLearnToday(1)).thenReturn(words)
             whenever(learningUseCase.getAllWordsInList(1)).thenReturn(flowOf(words))
             viewModel.initializeLearning(1)
             mainCoroutineRule.advanceUntilIdle()
-            verify(learningUseCase, atLeast(1)).getAllWordsInList(1)
+            verify(learningUseCase).getWordsToLearnToday(1)
         }
     }
 
@@ -81,6 +82,7 @@ class LearnViewModelTest {
             Word(id = 2, content = "world", translation = "世界")
         )
 
+        whenever(learningUseCase.getWordsToLearnToday(1)).thenReturn(words)
         whenever(learningUseCase.getAllWordsInList(1)).thenReturn(flowOf(words))
 
         viewModel.initializeLearning(1)
@@ -101,6 +103,7 @@ class LearnViewModelTest {
             Word(id = 2, content = "world", translation = "世界")
         )
 
+        whenever(learningUseCase.getWordsToLearnToday(1)).thenReturn(words)
         whenever(learningUseCase.getAllWordsInList(1)).thenReturn(flowOf(words))
 
         viewModel.initializeLearning(1)
@@ -123,6 +126,7 @@ class LearnViewModelTest {
             Word(id = 3, content = "test", translation = "测试")
         )
 
+        whenever(learningUseCase.getWordsToLearnToday(1)).thenReturn(words)
         whenever(learningUseCase.getAllWordsInList(1)).thenReturn(flowOf(words))
 
         viewModel.initializeLearning(1)

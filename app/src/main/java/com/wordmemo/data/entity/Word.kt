@@ -2,6 +2,7 @@ package com.wordmemo.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity(tableName = "words")
 data class Word(
@@ -13,4 +14,4 @@ data class Word(
     val example: String = "",
     val difficulty: Int = 1, // 1-5
     val createdAt: Long = System.currentTimeMillis()
-)
+) : Serializable

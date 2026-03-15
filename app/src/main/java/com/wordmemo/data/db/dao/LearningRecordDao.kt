@@ -81,4 +81,13 @@ interface LearningRecordDao {
 
     @Query("SELECT COUNT(*) FROM learning_records WHERE wordId = :wordId AND listId = :listId")
     suspend fun getRecordCountForWord(wordId: Int, listId: Int): Int
+
+    /** 获取今日学习的记录（按 reviewedAt 倒序） */
+    @Query("""
+        SELECT * FROM learning_records 
+        WHERE listId = :listId 
+        AND strftime('%Y-%m-%d', reviewedAt/1000, 'unixepoch', 'localtime') = strftime('%Y-%m-%d', 'now', 'localtime')
+        ORDER BY reviewedAt DESC
+    """)
+    suspend fun getTodayLearnedRecords(listId: Long): List<LearningRecord>
 }

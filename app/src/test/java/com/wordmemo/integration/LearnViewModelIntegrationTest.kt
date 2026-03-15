@@ -57,6 +57,7 @@ class LearnViewModelIntegrationTest {
                 Word(id = 1, content = "hello", translation = "你好"),
                 Word(id = 2, content = "world", translation = "世界")
             )
+            whenever(learningUseCase.getWordsToLearnToday(1)).thenReturn(words)
             whenever(learningUseCase.getAllWordsInList(1)).thenReturn(flowOf(words))
             whenever(learningUseCase.getTodayStatistics(1)).thenReturn(flowOf(
                 com.wordmemo.domain.usecase.LearningStatistics(
@@ -86,6 +87,7 @@ class LearnViewModelIntegrationTest {
             Word(id = 1, content = "hello", translation = "你好")
         )
 
+        whenever(learningUseCase.getWordsToLearnToday(1)).thenReturn(words)
         whenever(learningUseCase.getAllWordsInList(1)).thenReturn(flowOf(words))
         whenever(learningUseCase.getTodayStatistics(1)).thenReturn(flowOf(
             com.wordmemo.domain.usecase.LearningStatistics(0, 0, 0)
@@ -110,6 +112,7 @@ class LearnViewModelIntegrationTest {
             Word(id = 3, content = "test", translation = "测试")
         )
 
+        whenever(learningUseCase.getWordsToLearnToday(1)).thenReturn(words)
         whenever(learningUseCase.getAllWordsInList(1)).thenReturn(flowOf(words))
         whenever(learningUseCase.getTodayStatistics(1)).thenReturn(flowOf(
             com.wordmemo.domain.usecase.LearningStatistics(0, 0, 0)
@@ -136,6 +139,7 @@ class LearnViewModelIntegrationTest {
             Word(id = 1, content = "hello", translation = "你好")
         )
 
+        whenever(learningUseCase.getWordsToLearnToday(1)).thenReturn(words)
         whenever(learningUseCase.getAllWordsInList(1)).thenReturn(flowOf(words))
         whenever(learningUseCase.getTodayStatistics(1)).thenReturn(flowOf(
             com.wordmemo.domain.usecase.LearningStatistics(0, 0, 0)
@@ -155,6 +159,7 @@ class LearnViewModelIntegrationTest {
     fun testFeedbackQualityIntegration() {
         runBlocking {
             val words = listOf(Word(id = 1, content = "hello", translation = "你好"))
+            whenever(learningUseCase.getWordsToLearnToday(1)).thenReturn(words)
             whenever(learningUseCase.getAllWordsInList(1)).thenReturn(flowOf(words))
             whenever(learningUseCase.getTodayStatistics(1)).thenReturn(flowOf(
                 com.wordmemo.domain.usecase.LearningStatistics(0, 0, 0)
@@ -177,6 +182,7 @@ class LearnViewModelIntegrationTest {
             Word(id = 2, content = "world", translation = "世界")
         )
 
+        whenever(learningUseCase.getWordsToLearnToday(1)).thenReturn(words)
         whenever(learningUseCase.getAllWordsInList(1)).thenReturn(flowOf(words))
         whenever(learningUseCase.getTodayStatistics(1)).thenReturn(flowOf(
             com.wordmemo.domain.usecase.LearningStatistics(0, 0, 0)

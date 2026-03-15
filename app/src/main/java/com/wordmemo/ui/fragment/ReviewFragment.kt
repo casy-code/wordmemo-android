@@ -128,9 +128,18 @@ class ReviewFragment : Fragment() {
         val tv = binding.root.findViewById<TextView>(R.id.tv_content)
         tv?.text = when {
             word == null -> "待复习单词将在此显示"
-            flipped -> "${word.content}\n\n${word.translation}"
+            flipped -> buildWordDetailText(word)
             else -> word.content + "\n\n（点击卡片查看释义）"
         }
+    }
+
+    private fun buildWordDetailText(word: Word): String {
+        val sb = StringBuilder()
+        sb.append(word.content)
+        if (word.phonetic.isNotBlank()) sb.append("  [${word.phonetic}]")
+        sb.append("\n\n").append(word.translation)
+        if (word.example.isNotBlank()) sb.append("\n\n例句：\n${word.example}")
+        return sb.toString()
     }
 
     override fun onDestroyView() {

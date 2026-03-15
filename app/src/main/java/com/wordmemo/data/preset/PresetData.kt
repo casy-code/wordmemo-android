@@ -280,8 +280,16 @@ object PresetData {
         WordList(id = index + 1, name = cat.name, description = cat.description, type = "preset")
     }
 
+    /** 部分单词的发音、例句（用于展示） */
+    private val wordExtras: Map<String, Pair<String, String>> = mapOf(
+        "abandon" to ("/əˈbændən/" to "He abandoned his wife and children. 他抛弃了妻子和孩子。"),
+        "ability" to ("/əˈbɪləti/" to "She has the ability to succeed. 她有成功的能力。"),
+        "achieve" to ("/əˈtʃiːv/" to "We achieved our goal. 我们实现了目标。")
+    )
+
     /** 生成预设 Word 和 listId：前 100→1，101-200→2，...，401-500→5。仅取前 500 个 */
     fun toWordsAndItems(): List<Pair<Word, Int>> = allWords.take(500).mapIndexed { index, (content, translation) ->
-        Word(id = index + 1, content = content, translation = translation) to (index / 100 + 1)
+        val (phonetic, example) = wordExtras[content] ?: ("" to "")
+        Word(id = index + 1, content = content, translation = translation, phonetic = phonetic, example = example) to (index / 100 + 1)
     }
 }
