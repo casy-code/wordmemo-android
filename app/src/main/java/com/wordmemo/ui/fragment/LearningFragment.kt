@@ -49,7 +49,8 @@ class LearningFragment : Fragment() {
     }
 
     private fun setupViewModel() {
-        val app = requireContext().applicationContext as WordMemoApplication
+        val app = requireContext().applicationContext as? WordMemoApplication
+            ?: throw IllegalStateException("Application 必须是 WordMemoApplication，请检查 AndroidManifest")
         val factory = LearnViewModelFactory(app.appContainer.learningUseCase)
         viewModel = ViewModelProvider(this, factory).get(LearnViewModel::class.java)
     }

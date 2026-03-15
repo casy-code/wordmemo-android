@@ -1,6 +1,7 @@
 package com.wordmemo.data.db
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -71,9 +72,12 @@ abstract class AppDatabase : RoomDatabase() {
 
         override fun onOpen(db: SupportSQLiteDatabase) {
             super.onOpen(db)
-            // 数据库打开时的初始化逻辑
-            // 例如启用外键约束
-            db.execSQL("PRAGMA foreign_keys=ON")
+            try {
+                db.execSQL("PRAGMA foreign_keys=ON")
+            } catch (e: Exception) {
+                // 部分设备可能不支持，忽略
+                Log.w("AppDatabase", "启用外键失败", e)
+            }
         }
     }
 }

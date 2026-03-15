@@ -48,7 +48,8 @@ class StatisticsFragment : Fragment() {
     }
 
     private fun setupViewModel() {
-        val app = requireContext().applicationContext as WordMemoApplication
+        val app = requireContext().applicationContext as? WordMemoApplication
+            ?: throw IllegalStateException("Application 必须是 WordMemoApplication，请检查 AndroidManifest")
         val factory = StatsViewModelFactory(app.appContainer.learningUseCase)
         viewModel = ViewModelProvider(this, factory).get(StatsViewModel::class.java)
     }

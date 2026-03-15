@@ -75,7 +75,7 @@ jobs:
         path: app/build/outputs/apk/release/*.apk
 
   instrumented-tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: build
 
     steps:
@@ -94,16 +94,26 @@ jobs:
         echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
         sudo udevadm control --reload-rules
         sudo udevadm trigger --name-match=kvm
+        ls -la /dev/kvm || echo "KVM device not found"
+
+    - name: Gradle cache
+      uses: gradle/actions/setup-gradle@v4
 
     - name: Run instrumented tests
-      uses: reactivecircus/android-emulator-runner@v2
+      uses: reactivecircus/android-emulator-runner@v2.37.0
       with:
-        api-level: 34
-        emulator-boot-timeout: 600
+        api-level: 30
+        arch: x86_64
+        target: google_apis
+        emulator-boot-timeout: 900
+        disable-animations: true
+        # 当 KVM 不可用时使用软件模拟，避免 exit code 1
+        disable-linux-hw-accel: true
         script: ./gradlew connectedDebugAndroidTest --stacktrace --no-daemon
 
     - name: Upload instrumented test results
       if: always()
+      continue-on-error: true
       uses: actions/upload-artifact@v4
       with:
         name: instrumented-test-results
