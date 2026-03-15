@@ -31,7 +31,7 @@ jobs:
         ls -la $ANDROID_HOME 2>/dev/null || echo "ANDROID_HOME not found"
 
     - name: Build APKs
-      run: ./gradlew assembleDebug assembleRelease --stacktrace --no-daemon
+      run: ./gradlew clean assembleDebug assembleRelease --stacktrace --no-daemon
 
     - name: Run unit tests
       run: ./gradlew testDebugUnitTest --stacktrace
