@@ -96,12 +96,9 @@ class ReviewViewModel(
                 learningUseCase.recordFeedback(word.id, currentListId, quality)
 
                 val feedbackText = when (quality) {
-                    0 -> "完全忘记 ❌ - 下次复习: 1 天"
-                    1 -> "非常困难 😰 - 下次复习: 1 天"
-                    2 -> "困难 😕 - 下次复习: 1 天"
-                    3 -> "勉强记得 😐 - 下次复习: 3 天"
-                    4 -> "记得不错 😊 - 下次复习: 更长时间"
-                    5 -> "完美记得 🎉 - 下次复习: 更长时间"
+                    0, 1, 2 -> "困难 ❌ - 下次复习: 1 天"
+                    3 -> "一般 😐 - 下次复习: 3 天"
+                    4, 5 -> "简单 😊 - 下次复习: 更长时间"
                     else -> "反馈已记录"
                 }
                 _feedbackMessage.value = feedbackText

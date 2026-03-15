@@ -95,7 +95,7 @@ class ReviewViewModelTest {
     @Test
     fun recordFeedback_allQualities() {
         runBlocking {
-            val words = (1..5).map { i ->
+            val words = (1..3).map { i ->
                 Word(id = i, content = "word$i", translation = "词$i")
             }
             whenever(learningUseCase.getReviewDueWords(1)).thenReturn(words)
@@ -104,11 +104,11 @@ class ReviewViewModelTest {
             viewModel.initializeReview(1)
             mainCoroutineRule.advanceUntilIdle()
 
-            for (quality in listOf(0, 1, 2, 4, 5)) {
+            for (quality in listOf(0, 3, 5)) {
                 viewModel.recordFeedback(quality)
                 mainCoroutineRule.advanceUntilIdle()
             }
-            verify(learningUseCase, atLeast(5)).recordFeedback(any(), any(), any())
+            verify(learningUseCase, atLeast(3)).recordFeedback(any(), any(), any())
         }
     }
 

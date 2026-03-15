@@ -59,11 +59,9 @@ class ReviewFragmentTest {
         val scenario = launchReviewFragment()
         scenario.onFragment { fragment ->
             val root = fragment.view ?: return@onFragment
-            assertNotNull("btn_forgot 应在布局中存在", root.findViewById<View>(R.id.btn_forgot))
             assertNotNull("btn_hard 应在布局中存在", root.findViewById<View>(R.id.btn_hard))
             assertNotNull("btn_normal 应在布局中存在", root.findViewById<View>(R.id.btn_normal))
-            assertNotNull("btn_good 应在布局中存在", root.findViewById<View>(R.id.btn_good))
-            assertNotNull("btn_perfect 应在布局中存在", root.findViewById<View>(R.id.btn_perfect))
+            assertNotNull("btn_easy 应在布局中存在", root.findViewById<View>(R.id.btn_easy))
         }
     }
 

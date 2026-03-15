@@ -76,7 +76,7 @@ class LearnViewModelIntegrationTest {
             viewModel.recordFeedback(4)
             mainCoroutineRule.advanceUntilIdle()
             verify(learningUseCase).recordFeedback(1, 1, 4)
-            assert(viewModel.feedbackMessage.value?.contains("记得不错") == true)
+            assert(viewModel.feedbackMessage.value?.contains("简单") == true)
         }
     }
 

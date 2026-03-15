@@ -79,19 +79,13 @@ class ReviewFragment : Fragment() {
     }
 
     private fun setupFeedbackButtons() {
-        binding.root.findViewById<Button>(R.id.btn_forgot)?.setOnClickListener {
+        binding.root.findViewById<Button>(R.id.btn_hard)?.setOnClickListener {
             viewModel?.recordFeedback(0)
         }
-        binding.root.findViewById<Button>(R.id.btn_hard)?.setOnClickListener {
-            viewModel?.recordFeedback(1)
-        }
         binding.root.findViewById<Button>(R.id.btn_normal)?.setOnClickListener {
-            viewModel?.recordFeedback(2)
+            viewModel?.recordFeedback(3)
         }
-        binding.root.findViewById<Button>(R.id.btn_good)?.setOnClickListener {
-            viewModel?.recordFeedback(4)
-        }
-        binding.root.findViewById<Button>(R.id.btn_perfect)?.setOnClickListener {
+        binding.root.findViewById<Button>(R.id.btn_easy)?.setOnClickListener {
             viewModel?.recordFeedback(5)
         }
     }

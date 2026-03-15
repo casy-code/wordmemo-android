@@ -19,24 +19,12 @@
         android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_forgot"
-            style="@style/Widget.WordMemo.FeedbackButton"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:layout_weight="1"
-            android:layout_marginEnd="4dp"
-            android:minWidth="0dp"
-            android:text="忘记"
-            app:backgroundTint="@color/feedback_forgot"
-            app:cornerRadius="12dp" />
-
-        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_hard"
             style="@style/Widget.WordMemo.FeedbackButton"
             android:layout_width="0dp"
             android:layout_height="52dp"
             android:layout_weight="1"
-            android:layout_marginHorizontal="4dp"
+            android:layout_marginEnd="8dp"
             android:minWidth="0dp"
             android:text="困难"
             app:backgroundTint="@color/feedback_hard"
@@ -48,34 +36,22 @@
             android:layout_width="0dp"
             android:layout_height="52dp"
             android:layout_weight="1"
-            android:layout_marginHorizontal="4dp"
+            android:layout_marginHorizontal="8dp"
             android:minWidth="0dp"
             android:text="一般"
             app:backgroundTint="@color/feedback_normal"
             app:cornerRadius="12dp" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_good"
+            android:id="@+id/btn_easy"
             style="@style/Widget.WordMemo.FeedbackButton"
             android:layout_width="0dp"
             android:layout_height="52dp"
             android:layout_weight="1"
-            android:layout_marginHorizontal="4dp"
+            android:layout_marginStart="8dp"
             android:minWidth="0dp"
-            android:text="不错"
+            android:text="简单"
             app:backgroundTint="@color/feedback_good"
-            app:cornerRadius="12dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_perfect"
-            style="@style/Widget.WordMemo.FeedbackButton"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:layout_weight="1"
-            android:layout_marginStart="4dp"
-            android:minWidth="0dp"
-            android:text="完美"
-            app:backgroundTint="@color/feedback_perfect"
             app:cornerRadius="12dp" />
     </LinearLayout>
 </LinearLayout>
