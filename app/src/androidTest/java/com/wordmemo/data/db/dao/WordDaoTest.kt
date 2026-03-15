@@ -94,7 +94,7 @@ class WordDaoTest {
         )
         
         val id = wordDao.insert(word)
-        wordDao.delete(word)
+        wordDao.deleteWordById(id)
         
         val retrieved = wordDao.getWordById(id)
         assertNull(retrieved)

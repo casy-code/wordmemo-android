@@ -2,6 +2,7 @@ package com.wordmemo.integration
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
+import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.wordmemo.data.db.AppDatabase
@@ -43,7 +44,15 @@ class FinalIntegrationTest {
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
             AppDatabase::class.java
-        ).allowMainThreadQueries().build()
+        )
+            .addCallback(object : androidx.room.RoomDatabase.Callback() {
+                override fun onOpen(db: SupportSQLiteDatabase) {
+                    super.onOpen(db)
+                    db.execSQL("PRAGMA foreign_keys=ON")
+                }
+            })
+            .allowMainThreadQueries()
+            .build()
 
         wordDao = database.wordDao()
         wordListDao = database.wordListDao()
@@ -119,7 +128,7 @@ class FinalIntegrationTest {
 
         // 3. 为每个词库添加单词
         val allLists = wordListDao.getAllWordLists()
-        for ((index, list) in allLists.withIndex()) {
+        for ((index, _) in allLists.withIndex()) {
             val words = (1..10).map { i ->
                 Word(content = "word${index}_$i", translation = "单词${index}_$i", difficulty = 1)
             }
@@ -261,9 +270,11 @@ class FinalIntegrationTest {
             }
             wordDao.insertAll(words)
 
-            // 学习单词
-            val allWords = wordDao.getAllWords()
-            for (word in allWords.takeLast(20)) {
+            // 学习本周期新添加的单词（按 id 取最后 20 个）
+            val allWords = wordDao.getAllWords().sortedBy { it.id }
+            val startIdx = (cycle - 1) * 20
+            val newWords = allWords.drop(startIdx).take(20)
+            for (word in newWords) {
                 learningManager.recordLearningFeedback(word.id, listId, 4)
             }
 
@@ -272,7 +283,7 @@ class FinalIntegrationTest {
             assertTrue(records.isNotEmpty())
         }
 
-        // 3. 验证最终状态
+        // 3. 验证最终状态（200 个单词，每个都有学习记录）
         val finalWords = wordDao.getAllWords()
         val finalRecords = learningRecordDao.getRecordsByListId(listId)
         assertEquals(200, finalWords.size)

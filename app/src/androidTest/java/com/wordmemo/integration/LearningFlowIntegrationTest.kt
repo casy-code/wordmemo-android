@@ -87,12 +87,11 @@ class LearningFlowIntegrationTest {
         learningManager.recordLearningFeedback(word1.id, listId, 4)
 
         // 5. 验证学习记录已保存
-        val record = learningRecordDao.getRecordByWordAndList(word1.id, listId)
-        assertNotNull(record)
-        assertEquals(4, record?.quality)
+        val record = requireNotNull(learningRecordDao.getRecordByWordAndList(word1.id, listId))
+        assertEquals(4, record.quality)
 
         // 6. 验证间隔已更新
-        assertTrue(record!!.interval > 1)
+        assertTrue(record.interval > 1)
         assertTrue(record.nextReviewDate > System.currentTimeMillis())
 
         // 7. 继续学习其他单词
@@ -121,18 +120,16 @@ class LearningFlowIntegrationTest {
         learningManager.recordLearningFeedback(wordId, listId, 5)
 
         // 3. 获取记录
-        val record1 = learningRecordDao.getRecordByWordAndList(wordId, listId)
-        assertNotNull(record1)
-        val originalInterval = record1!!.interval
+        val record1 = requireNotNull(learningRecordDao.getRecordByWordAndList(wordId, listId))
+        val originalInterval = record1.interval
         val originalEaseFactor = record1.easeFactor
 
         // 4. 再次学习同一单词
         learningManager.recordLearningFeedback(wordId, listId, 4)
 
         // 5. 验证数据已更新
-        val record2 = learningRecordDao.getRecordByWordAndList(wordId, listId)
-        assertNotNull(record2)
-        assertTrue(record2!!.interval > originalInterval)
+        val record2 = requireNotNull(learningRecordDao.getRecordByWordAndList(wordId, listId))
+        assertTrue(record2.interval > originalInterval)
         assertTrue(record2.easeFactor > originalEaseFactor)
 
         // 6. 验证历史数据完整性
@@ -228,24 +225,23 @@ class LearningFlowIntegrationTest {
 
         // 2. 第一次学习：成功
         learningManager.recordLearningFeedback(wordId, listId, 4)
-        var record = learningRecordDao.getRecordByWordAndList(wordId, listId)
-        val interval1 = record!!.interval
+        var record = requireNotNull(learningRecordDao.getRecordByWordAndList(wordId, listId))
         val easeFactor1 = record.easeFactor
 
         // 3. 第二次学习：失败
         learningManager.recordLearningFeedback(wordId, listId, 0)
-        record = learningRecordDao.getRecordByWordAndList(wordId, listId)
+        record = requireNotNull(learningRecordDao.getRecordByWordAndList(wordId, listId))
 
         // 4. 验证失败后的恢复
-        assertEquals(1, record!!.interval) // 间隔重置为 1
+        assertEquals(1, record.interval) // 间隔重置为 1
         assertEquals(easeFactor1, record.easeFactor, 0.01) // 易度因子保持不变
 
         // 5. 第三次学习：恢复
         learningManager.recordLearningFeedback(wordId, listId, 4)
-        record = learningRecordDao.getRecordByWordAndList(wordId, listId)
+        record = requireNotNull(learningRecordDao.getRecordByWordAndList(wordId, listId))
 
         // 6. 验证恢复后的进度
-        assertTrue(record!!.interval > 1)
+        assertTrue(record.interval > 1)
         assertTrue(record.easeFactor > easeFactor1)
     }
 

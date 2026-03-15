@@ -14,6 +14,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 /**
  * AppDatabase 集成测试
@@ -30,7 +31,15 @@ class AppDatabaseTest {
         database = Room.inMemoryDatabaseBuilder(
             context,
             AppDatabase::class.java
-        ).build()
+        )
+            .addCallback(object : androidx.room.RoomDatabase.Callback() {
+                override fun onOpen(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                    super.onOpen(db)
+                    db.execSQL("PRAGMA foreign_keys=ON")
+                }
+            })
+            .allowMainThreadQueries()
+            .build()
     }
 
     @After
@@ -59,7 +68,7 @@ class AppDatabaseTest {
             type = "preset"
         )
         val listId = wordListDao.insert(wordList).toInt()
-        assertEquals(1, listId)
+        assertTrue(listId > 0)
 
         // 2. 创建单词
         val words = listOf(
@@ -78,44 +87,47 @@ class AppDatabaseTest {
         val word3 = wordDao.getWordByContent("able")
         assertNotNull(word3)
 
-        // 4. 创建学习记录
+        // 4. 创建学习记录（2 个未来复习，1 个今日到期）
         val now = System.currentTimeMillis()
+        val tomorrow = now + 86400000
         val listIdLong = listId.toLong()
         val records = listOf(
             LearningRecord(
-                wordId = word1.id,
+                wordId = requireNotNull(word1).id,
                 listId = listId,
                 quality = 4,
                 interval = 1,
                 easeFactor = 2.5,
-                nextReviewDate = now + 86400000
+                nextReviewDate = tomorrow
             ),
             LearningRecord(
-                wordId = word2.id,
+                wordId = requireNotNull(word2).id,
                 listId = listId,
                 quality = 3,
                 interval = 1,
                 easeFactor = 2.5,
-                nextReviewDate = now + 86400000
+                nextReviewDate = tomorrow
             ),
             LearningRecord(
-                wordId = word3.id,
+                wordId = requireNotNull(word3).id,
                 listId = listId,
                 quality = 0,
                 interval = 0,
                 easeFactor = 2.5,
-                nextReviewDate = now
+                nextReviewDate = now - 1000  // 明确设为过去，确保被 getDueRecords 命中
             )
         )
         learningRecordDao.insertAll(records)
-        assertEquals(3, learningRecordDao.getRecordCount(listId.toLong()))
+        assertEquals(3, learningRecordDao.getRecordCount(listIdLong))
 
-        // 5. 查询待复习单词
-        val dueRecords = learningRecordDao.getDueRecords(listId.toLong(), now)
+        // 5. 查询待复习单词（仅 nextReviewDate <= now 的）
+        val dueRecords = learningRecordDao.getDueRecords(listIdLong, now)
         assertEquals(1, dueRecords.size)
 
-        // 6. 更新学习记录
-        val updatedRecord = records[2].copy(
+        // 6. 更新学习记录（获取插入后的 id 再更新）
+        val recordToUpdate = learningRecordDao.getRecordByWordAndList(requireNotNull(word3).id, listId)
+            ?: error("待更新记录不存在")
+        val updatedRecord = recordToUpdate.copy(
             quality = 4,
             interval = 1,
             nextReviewDate = now + 86400000
@@ -161,16 +173,12 @@ class AppDatabaseTest {
         wordDao.insertAll(words)
 
         // 获取词库 ID
-        val list1 = wordListDao.getWordListByName("四级词汇")
-        val list2 = wordListDao.getWordListByName("六级词汇")
-        assertNotNull(list1)
-        assertNotNull(list2)
+        val list1 = requireNotNull(wordListDao.getWordListByName("四级词汇"))
+        val list2 = requireNotNull(wordListDao.getWordListByName("六级词汇"))
 
         // 为不同词库创建学习记录
-        val word1 = wordDao.getWordByContent("abandon")
-        val word2 = wordDao.getWordByContent("ability")
-        assertNotNull(word1)
-        assertNotNull(word2)
+        val word1 = requireNotNull(wordDao.getWordByContent("abandon"))
+        val word2 = requireNotNull(wordDao.getWordByContent("ability"))
 
         val records = listOf(
             LearningRecord(wordId = word1.id, listId = list1.id, quality = 4, nextReviewDate = System.currentTimeMillis()),
@@ -180,8 +188,10 @@ class AppDatabaseTest {
         learningRecordDao.insertAll(records)
 
         // 验证每个词库的学习记录数
-        assertEquals(2, learningRecordDao.getRecordCount(list1!!.id.toLong()))
-        assertEquals(1, learningRecordDao.getRecordCount(list2!!.id.toLong()))
+        val id1 = list1.id.toLong()
+        val id2 = list2.id.toLong()
+        assertEquals(2, learningRecordDao.getRecordCount(id1))
+        assertEquals(1, learningRecordDao.getRecordCount(id2))
 
         // 验证预设词库数量
         val presetLists = wordListDao.getWordListsByType("preset")

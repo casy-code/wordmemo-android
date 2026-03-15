@@ -1,10 +1,13 @@
 package com.wordmemo.data.db.dao
 
 import androidx.room.Room
+import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.wordmemo.data.db.AppDatabase
 import com.wordmemo.data.entity.LearningRecord
+import com.wordmemo.data.entity.Word
+import com.wordmemo.data.entity.WordList
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -19,13 +22,33 @@ class LearningRecordDaoTest {
     private lateinit var learningRecordDao: LearningRecordDao
 
     @Before
-    fun setUp() {
+    fun setUp() = runBlocking {
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
             AppDatabase::class.java
-        ).allowMainThreadQueries().build()
-        
+        )
+            .addCallback(object : androidx.room.RoomDatabase.Callback() {
+                override fun onOpen(db: SupportSQLiteDatabase) {
+                    super.onOpen(db)
+                    db.execSQL("PRAGMA foreign_keys=ON")
+                }
+            })
+            .allowMainThreadQueries()
+            .build()
+
         learningRecordDao = database.learningRecordDao()
+        // 插入外键依赖的 Word 和 WordList
+        database.wordDao().insertAll(
+            listOf(
+                Word(content = "w1", translation = "t1"),
+                Word(content = "w2", translation = "t2"),
+                Word(content = "w3", translation = "t3"),
+                Word(content = "w4", translation = "t4"),
+                Word(content = "w5", translation = "t5")
+            )
+        )
+        database.wordListDao().insert(WordList(name = "list1", type = "preset"))
+        database.wordListDao().insert(WordList(name = "list2", type = "preset"))
     }
 
     @After
@@ -119,8 +142,7 @@ class LearningRecordDaoTest {
     @Test
     fun testGetTodayLearningCount() = runBlocking {
         val now = System.currentTimeMillis()
-        val todayStart = now - (now % (24 * 60 * 60 * 1000))
-        
+
         val records = listOf(
             LearningRecord(
                 wordId = 1,

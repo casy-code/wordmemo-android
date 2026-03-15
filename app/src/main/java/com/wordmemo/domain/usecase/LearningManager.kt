@@ -140,7 +140,7 @@ class LearningManager(
      * @param listId 词库 ID
      * @return 连续学习天数
      */
-    suspend fun getConsecutiveLearningDays(listId: Int): Int {
+    suspend fun getConsecutiveLearningDays(@Suppress("UNUSED_PARAMETER") listId: Int): Int {
         // 这是一个简化的实现，实际应该查询数据库中的学习记录
         // 计算从第一次学习到现在的连续天数
         return 0 // TODO: 实现完整的连续天数计算

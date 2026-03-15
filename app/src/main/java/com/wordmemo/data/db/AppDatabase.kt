@@ -23,7 +23,7 @@ import com.wordmemo.data.entity.WordListItem
 @Database(
     entities = [Word::class, WordList::class, WordListItem::class, LearningRecord::class],
     version = 1,
-    exportSchema = true
+    exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun wordDao(): WordDao

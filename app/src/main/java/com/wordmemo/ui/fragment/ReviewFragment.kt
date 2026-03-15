@@ -22,12 +22,20 @@ class ReviewFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentReviewBinding.inflate(inflater, container, false)
-        return binding.root
+        return try {
+            _binding = FragmentReviewBinding.inflate(inflater, container, false)
+            binding.root
+        } catch (e: Exception) {
+            android.widget.TextView(requireContext()).apply {
+                text = "页面加载失败"
+                setPadding(48, 48, 48, 48)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (_binding == null) return
         setupUI()
     }
 

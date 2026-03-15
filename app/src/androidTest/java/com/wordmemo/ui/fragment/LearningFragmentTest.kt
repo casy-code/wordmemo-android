@@ -24,7 +24,7 @@ class LearningFragmentTest {
         val scenario = launchFragmentInContainer<LearningFragment>()
         scenario.onFragment { fragment ->
             assertNotNull(fragment.view)
-            assertNotNull(fragment.requireView().rootView)
+            assertNotNull(fragment.view?.rootView)
         }
     }
 }

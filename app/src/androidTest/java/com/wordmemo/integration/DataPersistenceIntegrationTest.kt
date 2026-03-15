@@ -2,6 +2,7 @@ package com.wordmemo.integration
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
+import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.wordmemo.data.db.AppDatabase
@@ -39,7 +40,15 @@ class DataPersistenceIntegrationTest {
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
             AppDatabase::class.java
-        ).allowMainThreadQueries().build()
+        )
+            .addCallback(object : androidx.room.RoomDatabase.Callback() {
+                override fun onOpen(db: SupportSQLiteDatabase) {
+                    super.onOpen(db)
+                    db.execSQL("PRAGMA foreign_keys=ON")
+                }
+            })
+            .allowMainThreadQueries()
+            .build()
 
         wordDao = database.wordDao()
         wordListDao = database.wordListDao()
@@ -71,7 +80,7 @@ class DataPersistenceIntegrationTest {
         assertEquals("Test Description", retrieved?.description)
 
         // 4. 更新词库
-        val updated = retrieved!!.copy(description = "Updated Description")
+        val updated = requireNotNull(retrieved).copy(description = "Updated Description")
         wordListDao.update(updated)
 
         // 5. 验证更新
@@ -108,11 +117,17 @@ class DataPersistenceIntegrationTest {
 
     @Test
     fun testLearningRecordPersistence() = runBlocking {
-        // 1. 创建学习记录
+        // 1. 先创建外键依赖
+        val wordList = WordList(name = "Test List", type = "preset")
+        val listId = wordListDao.insert(wordList).toInt()
+        val word = Word(content = "test", translation = "测试")
+        val wordId = wordDao.insert(word).toInt()
+
+        // 2. 创建学习记录
         val now = System.currentTimeMillis()
         val record = LearningRecord(
-            wordId = 1,
-            listId = 1,
+            wordId = wordId,
+            listId = listId,
             quality = 4,
             interval = 3,
             easeFactor = 2.6,
@@ -120,14 +135,14 @@ class DataPersistenceIntegrationTest {
             reviewedAt = now
         )
 
-        // 2. 保存记录
+        // 3. 保存记录
         val id = learningRecordDao.insert(record)
         assertTrue(id > 0)
 
         // 3. 从数据库读取
         val retrieved = learningRecordDao.getRecordById(id)
         assertNotNull(retrieved)
-        assertEquals(1, retrieved?.wordId)
+        assertEquals(wordId, retrieved?.wordId)
         assertEquals(4, retrieved?.quality)
         assertEquals(3, retrieved?.interval)
         assertEquals(2.6, retrieved?.easeFactor ?: 0.0, 0.01)
@@ -194,9 +209,9 @@ class DataPersistenceIntegrationTest {
         val deletedWord = wordDao.getWordById(wordId.toLong())
         assertNull(deletedWord)
 
-        // 5. 验证学习记录仍然存在（因为没有外键约束）
+        // 5. 验证学习记录已级联删除（外键 CASCADE）
         val records = learningRecordDao.getRecordsByListId(listId)
-        assertEquals(1, records.size)
+        assertEquals(0, records.size)
     }
 
     @Test
@@ -280,10 +295,16 @@ class DataPersistenceIntegrationTest {
 
     @Test
     fun testUpdateOperations() = runBlocking {
-        // 1. 创建学习记录
+        // 1. 先创建外键依赖
+        val wordList = WordList(name = "Update Test", type = "preset")
+        val listId = wordListDao.insert(wordList).toInt()
+        val word = Word(content = "update", translation = "更新")
+        val wordId = wordDao.insert(word).toInt()
+
+        // 2. 创建学习记录
         val record = LearningRecord(
-            wordId = 1,
-            listId = 1,
+            wordId = wordId,
+            listId = listId,
             quality = 2,
             interval = 1,
             easeFactor = 2.5,
@@ -292,7 +313,7 @@ class DataPersistenceIntegrationTest {
         )
         val id = learningRecordDao.insert(record)
 
-        // 2. 更新记录
+        // 3. 更新记录
         val updated = record.copy(
             id = id.toInt(),
             quality = 5,
@@ -301,7 +322,7 @@ class DataPersistenceIntegrationTest {
         )
         learningRecordDao.update(updated)
 
-        // 3. 验证更新
+        // 4. 验证更新
         val retrieved = learningRecordDao.getRecordById(id)
         assertEquals(5, retrieved?.quality)
         assertEquals(7, retrieved?.interval)

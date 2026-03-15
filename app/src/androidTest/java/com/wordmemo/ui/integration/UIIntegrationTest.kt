@@ -30,7 +30,7 @@ class UIIntegrationTest {
     fun testLearningFragmentLoads() {
         val scenario = launchFragmentInContainer<LearningFragment>()
         scenario.onFragment { fragment ->
-            assert(fragment.requireView() != null)
+            assert(fragment.view != null)
         }
     }
 }
