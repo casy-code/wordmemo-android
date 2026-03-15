@@ -1,7 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- 基础色 -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Material 3 主色 - 温暖靛蓝 -->
+    <color name="md_theme_primary">#FF4F46E5</color>
+    <color name="md_theme_onPrimary">#FFFFFFFF</color>
+    <color name="md_theme_primaryContainer">#FFE8DEFF</color>
+    <color name="md_theme_onPrimaryContainer">#FF1E0061</color>
+
+    <color name="md_theme_secondary">#FF625B71</color>
+    <color name="md_theme_onSecondary">#FFFFFFFF</color>
+    <color name="md_theme_secondaryContainer">#FFE8DEF8</color>
+    <color name="md_theme_onSecondaryContainer">#FF1D192B</color>
+
+    <color name="md_theme_tertiary">#FF7D5260</color>
+    <color name="md_theme_onTertiary">#FFFFFFFF</color>
+    <color name="md_theme_tertiaryContainer">#FFFFD8E4</color>
+    <color name="md_theme_onTertiaryContainer">#FF31111D</color>
+
+    <color name="md_theme_error">#FFBA1A1A</color>
+    <color name="md_theme_onError">#FFFFFFFF</color>
+    <color name="md_theme_errorContainer">#FFFFDAD6</color>
+    <color name="md_theme_onErrorContainer">#FF410002</color>
+
+    <color name="md_theme_background">#FFFFFBFE</color>
+    <color name="md_theme_onBackground">#FF1C1B1F</color>
+    <color name="md_theme_surface">#FFFFFBFE</color>
+    <color name="md_theme_onSurface">#FF1C1B1F</color>
+    <color name="md_theme_surfaceVariant">#FFE7E0EC</color>
+    <color name="md_theme_onSurfaceVariant">#FF49454F</color>
+    <color name="md_theme_outline">#FF79747E</color>
+    <color name="md_theme_outlineVariant">#FFCAC4D0</color>
+
+    <!-- 反馈按钮语义色 -->
+    <color name="feedback_forgot">#FFE53935</color>
+    <color name="feedback_hard">#FFFF8F00</color>
+    <color name="feedback_normal">#FF1E88E5</color>
+    <color name="feedback_good">#FF43A047</color>
+    <color name="feedback_perfect">#FF00897B</color>
+
+    <!-- 统计卡片色 -->
+    <color name="stat_learning">#FF6750A4</color>
+    <color name="stat_review">#FF00796B</color>
+    <color name="stat_streak">#FFE65100</color>
+
+    <!-- 兼容旧引用 -->
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>

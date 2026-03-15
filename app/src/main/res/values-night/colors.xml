@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="md_theme_primary">#FFD0BCFF</color>
+    <color name="md_theme_onPrimary">#FF381E72</color>
+    <color name="md_theme_primaryContainer">#FF4F46E5</color>
+    <color name="md_theme_onPrimaryContainer">#FFEADDFF</color>
+
+    <color name="md_theme_secondary">#FFCCC2DC</color>
+    <color name="md_theme_onSecondary">#FF332D41</color>
+    <color name="md_theme_secondaryContainer">#FF4A4458</color>
+    <color name="md_theme_onSecondaryContainer">#FFE8DEF8</color>
+
+    <color name="md_theme_tertiary">#FFEFB8C8</color>
+    <color name="md_theme_onTertiary">#FF492532</color>
+    <color name="md_theme_tertiaryContainer">#FF633B48</color>
+    <color name="md_theme_onTertiaryContainer">#FFFFD8E4</color>
+
+    <color name="md_theme_error">#FFFFB4AB</color>
+    <color name="md_theme_onError">#FF690005</color>
+    <color name="md_theme_errorContainer">#FF93000A</color>
+    <color name="md_theme_onErrorContainer">#FFFFDAD6</color>
+
+    <color name="md_theme_background">#FF1C1B1F</color>
+    <color name="md_theme_onBackground">#FFE6E1E5</color>
+    <color name="md_theme_surface">#FF1C1B1F</color>
+    <color name="md_theme_onSurface">#FFE6E1E5</color>
+    <color name="md_theme_surfaceVariant">#FF49454F</color>
+    <color name="md_theme_onSurfaceVariant">#FFCAC4D0</color>
+    <color name="md_theme_outline">#FF938F99</color>
+    <color name="md_theme_outlineVariant">#FF49454F</color>
+
+    <color name="feedback_forgot">#FFFFB4AB</color>
+    <color name="feedback_hard">#FFFFAB40</color>
+    <color name="feedback_normal">#FF82B1FF</color>
+    <color name="feedback_good">#FF81C784</color>
+    <color name="feedback_perfect">#FF4DB6AC</color>
+
+    <color name="stat_learning">#FF6750A4</color>
+    <color name="stat_review">#FF00796B</color>
+    <color name="stat_streak">#FFE65100</color>
+
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+</resources>

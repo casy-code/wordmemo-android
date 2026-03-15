@@ -3,68 +3,74 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="你对这个单词的印象如何？"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="12dp" />
+        android:textSize="15sp"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:layout_marginBottom="16dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:spacing="8dp">
+        android:orientation="horizontal">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_forgot"
+            style="@style/Widget.WordMemo.FeedbackButton"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="52dp"
             android:layout_weight="1"
+            android:layout_marginEnd="6dp"
             android:text="忘记"
-            android:textSize="12sp"
-            android:backgroundTint="@android:color/holo_red_light" />
+            app:backgroundTint="@color/feedback_forgot"
+            app:cornerRadius="12dp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_hard"
+            style="@style/Widget.WordMemo.FeedbackButton"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="52dp"
             android:layout_weight="1"
+            android:layout_marginHorizontal="6dp"
             android:text="困难"
-            android:textSize="12sp"
-            android:backgroundTint="@android:color/holo_orange_light" />
+            app:backgroundTint="@color/feedback_hard"
+            app:cornerRadius="12dp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_normal"
+            style="@style/Widget.WordMemo.FeedbackButton"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="52dp"
             android:layout_weight="1"
+            android:layout_marginHorizontal="6dp"
             android:text="一般"
-            android:textSize="12sp"
-            android:backgroundTint="@android:color/holo_blue_light" />
+            app:backgroundTint="@color/feedback_normal"
+            app:cornerRadius="12dp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_good"
+            style="@style/Widget.WordMemo.FeedbackButton"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="52dp"
             android:layout_weight="1"
+            android:layout_marginHorizontal="6dp"
             android:text="不错"
-            android:textSize="12sp"
-            android:backgroundTint="@android:color/holo_green_light" />
+            app:backgroundTint="@color/feedback_good"
+            app:cornerRadius="12dp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_perfect"
+            style="@style/Widget.WordMemo.FeedbackButton"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="52dp"
             android:layout_weight="1"
+            android:layout_marginStart="6dp"
             android:text="完美"
-            android:textSize="12sp"
-            android:backgroundTint="@android:color/holo_green_dark" />
-
+            app:backgroundTint="@color/feedback_perfect"
+            app:cornerRadius="12dp" />
     </LinearLayout>
-
 </LinearLayout>

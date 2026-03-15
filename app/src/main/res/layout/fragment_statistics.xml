@@ -2,62 +2,64 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp">
 
-        <!-- 标题 -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="学习统计"
             android:textSize="28sp"
             android:textStyle="bold"
-            android:textColor="@android:color/black" />
+            android:textColor="?attr/colorOnSurface"
+            android:letterSpacing="0.02" />
 
-        <!-- 状态描述 -->
         <TextView
             android:id="@+id/status_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="8dp"
             android:text="今天还没有学习，加油！💪"
-            android:textSize="16sp"
-            android:textColor="@android:color/darker_gray" />
+            android:textSize="15sp"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:layout_marginBottom="24dp" />
 
-        <!-- 统计卡片容器 -->
+        <!-- 统计卡片 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="24dp"
-            android:spacing="12dp">
+            android:orientation="horizontal">
 
-            <!-- 今日学习卡片 -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
-                android:layout_height="120dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
+                android:layout_marginEnd="6dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/stat_learning">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:padding="16dp">
+                    android:padding="20dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="今日学习"
                         android:textSize="12sp"
-                        android:textColor="@android:color/darker_gray" />
+                        android:textColor="#E8FFFFFF" />
 
                     <TextView
                         android:id="@+id/today_learning_count"
@@ -65,43 +67,43 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="0"
-                        android:textSize="32sp"
+                        android:textSize="28sp"
                         android:textStyle="bold"
-                        android:textColor="@android:color/holo_blue_light" />
+                        android:textColor="@color/white" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="个单词"
-                        android:textSize="10sp"
-                        android:textColor="@android:color/darker_gray" />
-
+                        android:textSize="11sp"
+                        android:textColor="#E8FFFFFF" />
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            </androidx.cardview.widget.CardView>
-
-            <!-- 今日复习卡片 -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
-                android:layout_height="120dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
+                android:layout_marginHorizontal="6dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/stat_review">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:padding="16dp">
+                    android:padding="20dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="今日复习"
                         android:textSize="12sp"
-                        android:textColor="@android:color/darker_gray" />
+                        android:textColor="#E8FFFFFF" />
 
                     <TextView
                         android:id="@+id/today_review_count"
@@ -109,43 +111,43 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="0"
-                        android:textSize="32sp"
+                        android:textSize="28sp"
                         android:textStyle="bold"
-                        android:textColor="@android:color/holo_green_light" />
+                        android:textColor="@color/white" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="个单词"
-                        android:textSize="10sp"
-                        android:textColor="@android:color/darker_gray" />
-
+                        android:textSize="11sp"
+                        android:textColor="#E8FFFFFF" />
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            </androidx.cardview.widget.CardView>
-
-            <!-- 连续天数卡片 -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
-                android:layout_height="120dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
+                android:layout_marginStart="6dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/stat_streak">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:padding="16dp">
+                    android:padding="20dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="连续天数"
                         android:textSize="12sp"
-                        android:textColor="@android:color/darker_gray" />
+                        android:textColor="#E8FFFFFF" />
 
                     <TextView
                         android:id="@+id/consecutive_days"
@@ -153,22 +155,19 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="0"
-                        android:textSize="32sp"
+                        android:textSize="28sp"
                         android:textStyle="bold"
-                        android:textColor="@android:color/holo_orange_light" />
+                        android:textColor="@color/white" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="天"
-                        android:textSize="10sp"
-                        android:textColor="@android:color/darker_gray" />
-
+                        android:textSize="11sp"
+                        android:textColor="#E8FFFFFF" />
                 </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
         <!-- 学习进度 -->
@@ -176,7 +175,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="24dp">
+            android:layout_marginTop="28dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -184,18 +183,18 @@
                 android:text="学习进度"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="@android:color/black" />
+                android:textColor="?attr/colorOnSurface"
+                android:layout_marginBottom="12dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="12dp"
                 android:gravity="center_vertical">
 
                 <ProgressBar
                     android:id="@+id/learning_progress"
-                    style="?android:attr/progressBarStyleHorizontal"
+                    style="@style/Widget.WordMemo.ProgressBar"
                     android:layout_width="0dp"
                     android:layout_height="8dp"
                     android:layout_weight="1"
@@ -206,25 +205,23 @@
                     android:id="@+id/progress_percentage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginStart="16dp"
                     android:text="0%"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
-                    android:textColor="@android:color/holo_blue_light" />
-
+                    android:textColor="?attr/colorPrimary" />
             </LinearLayout>
-
         </LinearLayout>
 
-        <!-- 刷新按钮 -->
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_refresh"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="24dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="28dp"
             android:text="刷新统计"
-            android:textSize="16sp" />
-
+            android:textSize="16sp"
+            app:cornerRadius="16dp"
+            app:backgroundTint="?attr/colorSecondaryContainer"
+            android:textColor="?attr/colorOnSecondaryContainer" />
     </LinearLayout>
-
 </ScrollView>

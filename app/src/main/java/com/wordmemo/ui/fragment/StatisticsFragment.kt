@@ -71,47 +71,42 @@ class StatisticsFragment : Fragment() {
     }
 
     private fun setupUI() {
-        // 设置刷新按钮
         binding.root.findViewById<Button>(R.id.btn_refresh)?.setOnClickListener {
-            // viewModel.refreshStatistics()
-            Toast.makeText(context, "已刷新统计", Toast.LENGTH_SHORT).show()
+            viewModel?.refreshStatistics()
         }
     }
 
     private fun observeViewModel() {
-        // 观察今日学习数
-        // viewModel.todayLearningCount.observe(viewLifecycleOwner) { count ->
-        //     binding.root.findViewById<TextView>(R.id.today_learning_count)?.text = count.toString()
-        // }
+        viewModel?.todayLearningCount?.observe(viewLifecycleOwner) {
+            binding.root.findViewById<TextView>(R.id.today_learning_count)?.text = it.toString()
+            updateStatusDescription()
+        }
 
-        // 观察今日复习数
-        // viewModel.todayReviewCount.observe(viewLifecycleOwner) { count ->
-        //     binding.root.findViewById<TextView>(R.id.today_review_count)?.text = count.toString()
-        // }
+        viewModel?.todayReviewCount?.observe(viewLifecycleOwner) {
+            binding.root.findViewById<TextView>(R.id.today_review_count)?.text = it.toString()
+            updateStatusDescription()
+        }
 
-        // 观察连续天数
-        // viewModel.consecutiveDays.observe(viewLifecycleOwner) { days ->
-        //     binding.root.findViewById<TextView>(R.id.consecutive_days)?.text = days.toString()
-        // }
+        viewModel?.consecutiveDays?.observe(viewLifecycleOwner) {
+            binding.root.findViewById<TextView>(R.id.consecutive_days)?.text = it.toString()
+        }
 
-        // 观察学习进度
-        // viewModel.learningProgress.observe(viewLifecycleOwner) { progress ->
-        //     binding.root.findViewById<ProgressBar>(R.id.learning_progress)?.progress = progress
-        //     binding.root.findViewById<TextView>(R.id.progress_percentage)?.text = "$progress%"
-        // }
+        viewModel?.learningProgress?.observe(viewLifecycleOwner) { progress ->
+            binding.root.findViewById<ProgressBar>(R.id.learning_progress)?.progress = progress
+            binding.root.findViewById<TextView>(R.id.progress_percentage)?.text = "$progress%"
+        }
 
-        // 观察加载状态
-        // viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-        //     // 显示/隐藏加载指示器
-        // }
+        viewModel?.errorMessage?.observe(viewLifecycleOwner) { message ->
+            if (!message.isNullOrEmpty()) {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                viewModel?.clearErrorMessage()
+            }
+        }
+    }
 
-        // 观察错误消息
-        // viewModel.errorMessage.observe(viewLifecycleOwner) { message ->
-        //     if (message.isNotEmpty()) {
-        //         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-        //         viewModel.clearErrorMessage()
-        //     }
-        // }
+    private fun updateStatusDescription() {
+        binding.root.findViewById<TextView>(R.id.status_description)?.text =
+            viewModel?.getLearningStatusDescription() ?: "今天还没有学习，加油！💪"
     }
 
     override fun onDestroyView() {

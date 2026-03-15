@@ -11,6 +11,7 @@ import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.wordmemo.R
+import com.wordmemo.data.entity.Word
 import com.wordmemo.WordMemoApplication
 import com.wordmemo.databinding.FragmentLearningBinding
 import com.wordmemo.ui.viewmodel.LearnViewModel
@@ -71,12 +72,12 @@ class LearningFragment : Fragment() {
     }
 
     private fun setupUI() {
-        // 设置卡片点击事件（翻转）
+        // 设置卡片点击事件（翻转显示释义）
         binding.root.findViewById<CardView>(R.id.word_card)?.setOnClickListener {
-            // viewModel.flipCard()
+            viewModel?.flipCard()
         }
 
-        // 设置反馈按钮
+        // 设置反馈按钮（按产品文档：quality 0-5，SM-2 算法）
         setupFeedbackButtons()
         
         // 设置导航按钮
@@ -85,28 +86,23 @@ class LearningFragment : Fragment() {
 
     private fun setupFeedbackButtons() {
         binding.root.findViewById<Button>(R.id.btn_forgot)?.setOnClickListener {
-            // viewModel.recordFeedback(0)
-            Toast.makeText(context, "已记录: 忘记", Toast.LENGTH_SHORT).show()
+            viewModel?.recordFeedback(0)
         }
 
         binding.root.findViewById<Button>(R.id.btn_hard)?.setOnClickListener {
-            // viewModel.recordFeedback(1)
-            Toast.makeText(context, "已记录: 困难", Toast.LENGTH_SHORT).show()
+            viewModel?.recordFeedback(1)
         }
 
         binding.root.findViewById<Button>(R.id.btn_normal)?.setOnClickListener {
-            // viewModel.recordFeedback(2)
-            Toast.makeText(context, "已记录: 一般", Toast.LENGTH_SHORT).show()
+            viewModel?.recordFeedback(2)
         }
 
         binding.root.findViewById<Button>(R.id.btn_good)?.setOnClickListener {
-            // viewModel.recordFeedback(4)
-            Toast.makeText(context, "已记录: 不错", Toast.LENGTH_SHORT).show()
+            viewModel?.recordFeedback(4)
         }
 
         binding.root.findViewById<Button>(R.id.btn_perfect)?.setOnClickListener {
-            // viewModel.recordFeedback(5)
-            Toast.makeText(context, "已记录: 完美", Toast.LENGTH_SHORT).show()
+            viewModel?.recordFeedback(5)
         }
     }
 
@@ -115,13 +111,12 @@ class LearningFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        // 观察当前单词 - 在 tv_content 中展示
+        // 观察当前单词 - 在 tv_content 中展示（未翻转仅显示单词，翻转后显示释义）
         viewModel?.currentWord?.observe(viewLifecycleOwner) { word ->
-            val tv = binding.root.findViewById<TextView>(R.id.tv_content)
-            tv?.text = when {
-                word != null -> "${word.content}\n\n${word.translation}"
-                else -> "待学习单词将在此显示"
-            }
+            updateWordDisplay(word, viewModel?.isCardFlipped?.value ?: false)
+        }
+        viewModel?.isCardFlipped?.observe(viewLifecycleOwner) { flipped ->
+            updateWordDisplay(viewModel?.currentWord?.value, flipped)
         }
 
         // 观察反馈消息
@@ -145,7 +140,15 @@ class LearningFragment : Fragment() {
                 tv?.text = msg?.takeIf { it.isNotEmpty() } ?: "今日学习已完成！"
             }
         }
+    }
 
+    private fun updateWordDisplay(word: Word?, flipped: Boolean) {
+        val tv = binding.root.findViewById<TextView>(R.id.tv_content)
+        tv?.text = when {
+            word == null -> "待学习单词将在此显示"
+            flipped -> "${word.content}\n\n${word.translation}"
+            else -> word.content + "\n\n（点击卡片查看释义）"
+        }
     }
 
     override fun onDestroyView() {

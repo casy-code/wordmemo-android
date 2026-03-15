@@ -44,7 +44,7 @@ class StatsViewModel(
      */
     fun initializeStats(listId: Int) {
         currentListId = listId
-        loadStatistics()
+        refreshStatistics()
     }
 
     /**

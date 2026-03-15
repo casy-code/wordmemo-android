@@ -64,7 +64,7 @@ class StatsViewModelTest {
             mainCoroutineRule.advanceUntilIdle()
             viewModel.loadLearningProgress()
             mainCoroutineRule.advanceUntilIdle()
-            verify(learningUseCase).getLearningProgress(1)
+            verify(learningUseCase, atLeast(1)).getLearningProgress(1)
             assert(viewModel.learningProgress.value == 45)
         }
     }
