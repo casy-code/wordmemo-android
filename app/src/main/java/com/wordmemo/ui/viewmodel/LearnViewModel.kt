@@ -225,4 +225,30 @@ class LearnViewModel(
     fun getLearningProgressPercentage(): Int {
         return if (wordList.isEmpty()) 0 else ((currentIndex + 1) * 100) / wordList.size
     }
+
+    /**
+     * 获取当前单词索引（用于 UI 和测试）
+     */
+    fun getCurrentWordIndex(): Int = currentIndex
+
+    /**
+     * 获取总单词数（用于 UI 和测试）
+     */
+    fun getTotalWords(): Int = wordList.size
+
+    /**
+     * 仅用于测试：设置当前单词
+     */
+    @androidx.annotation.VisibleForTesting
+    fun setCurrentWordForTesting(word: Word?) {
+        _currentWord.value = word
+    }
+
+    /**
+     * 仅用于测试：设置当前词库 ID
+     */
+    @androidx.annotation.VisibleForTesting
+    fun setCurrentListIdForTesting(listId: Int) {
+        currentListId = listId
+    }
 }

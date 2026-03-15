@@ -29,7 +29,7 @@ class SM2AlgorithmTest {
 
     @Test
     fun testCalculateNextReview_QualityEquals3() {
-        // 学习成功：质量 = 3（勉强记得）
+        // 学习成功：质量 = 3（勉强记得），间隔从 1 变为 3
         val result = SM2Algorithm.calculateNextReview(
             quality = 3,
             currentInterval = 1,
@@ -38,13 +38,14 @@ class SM2AlgorithmTest {
         )
         
         assertEquals(3, result.nextInterval)
-        assertTrue(result.nextEaseFactor > 2.5)
+        // 质量 3 时易度因子会略微下降（EF' = EF + (0.1 - (5-3)*(0.08+(5-3)*0.02)) = 2.5 - 0.14）
+        assertTrue(result.nextEaseFactor in 2.3..2.5)
         assertEquals(1000000L + 3 * 24 * 60 * 60 * 1000L, result.nextReviewDate)
     }
 
     @Test
     fun testCalculateNextReview_QualityEquals4() {
-        // 学习成功：质量 = 4（记得不错）
+        // 学习成功：质量 = 4（记得不错），易度因子调整约为 0
         val result = SM2Algorithm.calculateNextReview(
             quality = 4,
             currentInterval = 3,
@@ -53,7 +54,7 @@ class SM2AlgorithmTest {
         )
         
         assertEquals((3 * 2.5).toInt(), result.nextInterval)
-        assertTrue(result.nextEaseFactor > 2.5)
+        assertTrue(result.nextEaseFactor >= 2.5)
     }
 
     @Test
@@ -153,9 +154,8 @@ class SM2AlgorithmTest {
         )
         
         assertEquals(3, result.nextInterval)
-        var easeFactor = result.nextEaseFactor
         
-        // 第二次复习
+        // 第二次复习：间隔 3 -> 7
         result = SM2Algorithm.calculateNextReview(
             quality = 4,
             currentInterval = result.nextInterval,
@@ -164,7 +164,7 @@ class SM2AlgorithmTest {
         )
         
         assertTrue(result.nextInterval > 3)
-        assertTrue(result.nextEaseFactor > easeFactor)
+        assertTrue(result.nextEaseFactor >= 2.5)
     }
 
     @Test

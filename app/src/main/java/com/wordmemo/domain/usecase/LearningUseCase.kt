@@ -30,7 +30,7 @@ class LearningUseCase(
      * @return 词库信息
      */
     suspend fun getWordList(listId: Int): WordList? {
-        return wordListDao.getWordListById(listId)
+        return wordListDao.getWordListById(listId.toLong())
     }
 
     /**
@@ -41,8 +41,8 @@ class LearningUseCase(
      */
     fun getTodayStatistics(listId: Int): Flow<LearningStatistics> {
         return combine(
-            learningRecordDao.getTodayLearningCount(listId),
-            learningRecordDao.getTodayReviewCount(listId)
+            learningRecordDao.getTodayLearningCount(listId.toLong()),
+            learningRecordDao.getTodayReviewCountFlow(listId.toLong())
         ) { learningCount, reviewCount ->
             LearningStatistics(
                 todayLearningCount = learningCount,
@@ -69,7 +69,7 @@ class LearningUseCase(
      * @return 单词列表
      */
     fun getAllWordsInList(listId: Int): Flow<List<Word>> {
-        return wordDao.getAllWords()
+        return wordDao.getWordsByListIdFlow(listId)
     }
 
     /**
@@ -92,8 +92,9 @@ class LearningUseCase(
      * @return 学习进度信息
      */
     suspend fun getWordProgress(wordId: Int, listId: Int): WordProgress? {
-        val word = wordDao.getWordById(wordId) ?: return null
+        val word = wordDao.getWordById(wordId.toLong()) ?: return null
         val record = learningManager.getLearningRecord(wordId, listId)
+        val reviewCount = learningRecordDao.getRecordCountForWord(wordId, listId)
         
         return if (record != null) {
             WordProgress(
@@ -103,7 +104,7 @@ class LearningUseCase(
                 interval = record.interval,
                 easeFactor = record.easeFactor,
                 nextReviewDate = record.nextReviewDate,
-                reviewCount = record.reviewCount,
+                reviewCount = reviewCount,
                 isReviewDue = record.nextReviewDate <= System.currentTimeMillis()
             )
         } else {
@@ -127,15 +128,13 @@ class LearningUseCase(
      * @return 学习进度列表
      */
     suspend fun getWordProgressList(listId: Int): List<WordProgress> {
-        val words = wordDao.getAllWords()
+        val words = wordDao.getWordsByListId(listId)
         val progressList = mutableListOf<WordProgress>()
         
-        words.collect { wordList ->
-            for (word in wordList) {
-                val progress = getWordProgress(word.id, listId)
-                if (progress != null) {
-                    progressList.add(progress)
-                }
+        for (word in words) {
+            val progress = getWordProgress(word.id, listId)
+            if (progress != null) {
+                progressList.add(progress)
             }
         }
         
@@ -159,10 +158,7 @@ class LearningUseCase(
      * @return 学习进度百分比 (0-100)
      */
     suspend fun getLearningProgress(listId: Int): Int {
-        val allWords = mutableListOf<Word>()
-        wordDao.getAllWords().collect { words ->
-            allWords.addAll(words)
-        }
+        val allWords = wordDao.getWordsByListId(listId)
         
         if (allWords.isEmpty()) return 0
         

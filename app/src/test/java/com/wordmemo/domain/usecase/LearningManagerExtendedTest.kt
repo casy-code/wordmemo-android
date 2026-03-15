@@ -11,6 +11,7 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
@@ -31,7 +32,8 @@ class LearningManagerExtendedTest {
     }
 
     @Test
-    fun testGetReviewDueWords() = runBlocking {
+    fun testGetReviewDueWords() {
+        runBlocking {
         val word1 = Word(id = 1, content = "hello", translation = "你好")
         val word2 = Word(id = 2, content = "world", translation = "世界")
         val record1 = LearningRecord(
@@ -55,41 +57,46 @@ class LearningManagerExtendedTest {
             reviewedAt = System.currentTimeMillis()
         )
 
-        whenever(learningRecordDao.getReviewDueRecords(1, any())).thenReturn(
+        whenever(learningRecordDao.getDueRecordsFlow(eq(1L), any())).thenReturn(
             flowOf(listOf(record1, record2))
         )
-        whenever(wordDao.getWordById(1)).thenReturn(word1)
-        whenever(wordDao.getWordById(2)).thenReturn(word2)
+        whenever(wordDao.getWordById(1L)).thenReturn(word1)
+        whenever(wordDao.getWordById(2L)).thenReturn(word2)
 
         val result = learningManager.getReviewDueWords(1)
 
-        assert(result.size == 2)
-        assert(result[0].id == 1)
-        assert(result[1].id == 2)
+            assert(result.size == 2)
+            assert(result[0].id == 1)
+            assert(result[1].id == 2)
+        }
     }
 
     @Test
-    fun testGetReviewDueWords_Empty() = runBlocking {
-        whenever(learningRecordDao.getReviewDueRecords(1, any())).thenReturn(flowOf(emptyList()))
+    fun testGetReviewDueWords_Empty() {
+        runBlocking {
+        whenever(learningRecordDao.getDueRecordsFlow(eq(1L), any())).thenReturn(flowOf(emptyList()))
 
-        val result = learningManager.getReviewDueWords(1)
-
-        assert(result.isEmpty())
+            val result = learningManager.getReviewDueWords(1)
+            assert(result.isEmpty())
+        }
     }
 
     @Test
-    fun testRecordLearningFeedback_NewRecord() = runBlocking {
+    fun testRecordLearningFeedback_NewRecord() {
+        runBlocking {
         whenever(learningRecordDao.getRecordByWordAndList(1, 1)).thenReturn(null)
         whenever(learningRecordDao.insert(any())).thenReturn(1L)
 
         learningManager.recordLearningFeedback(1, 1, 4)
 
-        verify(learningRecordDao).getRecordByWordAndList(1, 1)
-        verify(learningRecordDao).insert(any())
+            verify(learningRecordDao).getRecordByWordAndList(1, 1)
+            verify(learningRecordDao).insert(any())
+        }
     }
 
     @Test
-    fun testRecordLearningFeedback_UpdateRecord() = runBlocking {
+    fun testRecordLearningFeedback_UpdateRecord() {
+        runBlocking {
         val existingRecord = LearningRecord(
             id = 1,
             wordId = 1,
@@ -106,12 +113,14 @@ class LearningManagerExtendedTest {
 
         learningManager.recordLearningFeedback(1, 1, 4)
 
-        verify(learningRecordDao).getRecordByWordAndList(1, 1)
-        verify(learningRecordDao).update(any())
+            verify(learningRecordDao).getRecordByWordAndList(1, 1)
+            verify(learningRecordDao).update(any())
+        }
     }
 
     @Test
-    fun testRecordLearningFeedback_FailureCase() = runBlocking {
+    fun testRecordLearningFeedback_FailureCase() {
+        runBlocking {
         val existingRecord = LearningRecord(
             id = 1,
             wordId = 1,
@@ -129,11 +138,13 @@ class LearningManagerExtendedTest {
         // 记录失败反馈（quality = 1）
         learningManager.recordLearningFeedback(1, 1, 1)
 
-        verify(learningRecordDao).update(any())
+            verify(learningRecordDao).update(any())
+        }
     }
 
     @Test
-    fun testGetLearningRecord() = runBlocking {
+    fun testGetLearningRecord() {
+        runBlocking {
         val record = LearningRecord(
             id = 1,
             wordId = 1,
@@ -149,24 +160,26 @@ class LearningManagerExtendedTest {
 
         val result = learningManager.getLearningRecord(1, 1)
 
-        assert(result != null)
-        assert(result!!.quality == 4)
+            assert(result != null)
+            assert(result!!.quality == 4)
+        }
     }
 
     @Test
-    fun testGetLearningRecord_NotFound() = runBlocking {
+    fun testGetLearningRecord_NotFound() {
+        runBlocking {
         whenever(learningRecordDao.getRecordByWordAndList(1, 1)).thenReturn(null)
 
-        val result = learningManager.getLearningRecord(1, 1)
-
-        assert(result == null)
+            val result = learningManager.getLearningRecord(1, 1)
+            assert(result == null)
+        }
     }
 
     @Test
-    fun testGetConsecutiveLearningDays() = runBlocking {
-        val days = learningManager.getConsecutiveLearningDays(1)
-
-        // 当前实现返回 0
-        assert(days == 0)
+    fun testGetConsecutiveLearningDays() {
+        runBlocking {
+            val days = learningManager.getConsecutiveLearningDays(1)
+            assert(days == 0)
+        }
     }
 }

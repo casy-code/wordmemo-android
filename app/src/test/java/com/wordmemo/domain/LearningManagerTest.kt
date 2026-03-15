@@ -31,25 +31,26 @@ class LearningManagerTest {
     }
 
     @Test
-    fun testGetTodayLearningCount() = runBlocking {
-        whenever(learningRecordDao.getTodayLearningCount(1)).thenReturn(flowOf(5))
-        
-        val count = learningRecordDao.getTodayLearningCount(1)
-        
-        verify(learningRecordDao).getTodayLearningCount(1)
+    fun testGetTodayLearningCount() {
+        runBlocking {
+            whenever(learningRecordDao.getTodayLearningCount(1L)).thenReturn(flowOf(5))
+            learningManager.getTodayLearningCount(1)
+            verify(learningRecordDao).getTodayLearningCount(1L)
+        }
     }
 
     @Test
-    fun testGetTodayReviewCount() = runBlocking {
-        whenever(learningRecordDao.getTodayReviewCount(1)).thenReturn(flowOf(3))
-        
-        val count = learningRecordDao.getTodayReviewCount(1)
-        
-        verify(learningRecordDao).getTodayReviewCount(1)
+    fun testGetTodayReviewCount() {
+        runBlocking {
+            whenever(learningRecordDao.getTodayReviewCountFlow(1L)).thenReturn(flowOf(3))
+            learningManager.getTodayReviewCount(1)
+            verify(learningRecordDao).getTodayReviewCountFlow(1L)
+        }
     }
 
     @Test
-    fun testRecordLearningFeedback_NewRecord() = runBlocking {
+    fun testRecordLearningFeedback_NewRecord() {
+        runBlocking {
         val wordId = 1
         val listId = 1
         val quality = 4
@@ -57,14 +58,15 @@ class LearningManagerTest {
         whenever(learningRecordDao.getRecordByWordAndList(wordId, listId)).thenReturn(null)
         whenever(learningRecordDao.insert(any())).thenReturn(1L)
 
-        learningManager.recordLearningFeedback(wordId, listId, quality)
-
-        verify(learningRecordDao).getRecordByWordAndList(wordId, listId)
-        verify(learningRecordDao).insert(any())
+            learningManager.recordLearningFeedback(wordId, listId, quality)
+            verify(learningRecordDao).getRecordByWordAndList(wordId, listId)
+            verify(learningRecordDao).insert(any())
+        }
     }
 
     @Test
-    fun testRecordLearningFeedback_ExistingRecord() = runBlocking {
+    fun testRecordLearningFeedback_ExistingRecord() {
+        runBlocking {
         val wordId = 1
         val listId = 1
         val quality = 4
@@ -82,14 +84,15 @@ class LearningManagerTest {
         whenever(learningRecordDao.getRecordByWordAndList(wordId, listId)).thenReturn(existingRecord)
         whenever(learningRecordDao.update(any())).thenReturn(Unit)
 
-        learningManager.recordLearningFeedback(wordId, listId, quality)
-
-        verify(learningRecordDao).getRecordByWordAndList(wordId, listId)
-        verify(learningRecordDao).update(any())
+            learningManager.recordLearningFeedback(wordId, listId, quality)
+            verify(learningRecordDao).getRecordByWordAndList(wordId, listId)
+            verify(learningRecordDao).update(any())
+        }
     }
 
     @Test
-    fun testGetLearningRecord() = runBlocking {
+    fun testGetLearningRecord() {
+        runBlocking {
         val wordId = 1
         val listId = 1
         val record = LearningRecord(
@@ -103,19 +106,18 @@ class LearningManagerTest {
             reviewedAt = System.currentTimeMillis()
         )
 
-        whenever(learningRecordDao.getRecordByWordAndList(wordId, listId)).thenReturn(record)
-
-        val result = learningManager.getLearningRecord(wordId, listId)
-
-        verify(learningRecordDao).getRecordByWordAndList(wordId, listId)
+            whenever(learningRecordDao.getRecordByWordAndList(wordId, listId)).thenReturn(record)
+            learningManager.getLearningRecord(wordId, listId)
+            verify(learningRecordDao).getRecordByWordAndList(wordId, listId)
+        }
     }
 
     @Test
-    fun testGetConsecutiveLearningDays() = runBlocking {
-        val listId = 1
-        val days = learningManager.getConsecutiveLearningDays(listId)
-        
-        // 当前实现返回 0，这是一个占位符
-        assert(days >= 0)
+    fun testGetConsecutiveLearningDays() {
+        runBlocking {
+            val listId = 1
+            val days = learningManager.getConsecutiveLearningDays(listId)
+            assert(days >= 0)
+        }
     }
 }

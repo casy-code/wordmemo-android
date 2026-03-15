@@ -34,6 +34,15 @@ interface LearningRecordDao {
     @Query("SELECT * FROM learning_records WHERE wordId = :wordId AND listId = :listId ORDER BY reviewedAt DESC LIMIT 1")
     suspend fun getLatestRecord(wordId: Long, listId: Long): LearningRecord?
 
+    @Query("SELECT * FROM learning_records WHERE wordId = :wordId AND listId = :listId ORDER BY reviewedAt DESC LIMIT 1")
+    suspend fun getRecordByWordAndList(wordId: Int, listId: Int): LearningRecord?
+
+    @Query("SELECT COUNT(*) FROM learning_records WHERE listId = :listId AND strftime('%Y-%m-%d', reviewedAt/1000, 'unixepoch', 'localtime') = strftime('%Y-%m-%d', 'now', 'localtime')")
+    fun getTodayLearningCount(listId: Long): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM learning_records WHERE listId = :listId AND strftime('%Y-%m-%d', reviewedAt/1000, 'unixepoch', 'localtime') = strftime('%Y-%m-%d', 'now', 'localtime')")
+    fun getTodayReviewCountFlow(listId: Long): Flow<Int>
+
     @Query("SELECT * FROM learning_records WHERE listId = :listId AND nextReviewDate <= :currentDate ORDER BY nextReviewDate ASC")
     suspend fun getDueRecords(listId: Long, currentDate: Long): List<LearningRecord>
 
@@ -63,4 +72,7 @@ interface LearningRecordDao {
 
     @Query("SELECT COUNT(*) FROM learning_records WHERE listId = :listId")
     suspend fun getRecordCount(listId: Long): Int
+
+    @Query("SELECT COUNT(*) FROM learning_records WHERE wordId = :wordId AND listId = :listId")
+    suspend fun getRecordCountForWord(wordId: Int, listId: Int): Int
 }

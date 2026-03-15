@@ -31,9 +31,9 @@ class LearningManager(
         val currentTime = System.currentTimeMillis()
         val wordList = mutableListOf<Word>()
         
-        learningRecordDao.getReviewDueRecords(listId, currentTime).collect { records ->
+        learningRecordDao.getDueRecordsFlow(listId.toLong(), currentTime).collect { records ->
             for (record in records) {
-                val word = wordDao.getWordById(record.wordId)
+                val word = wordDao.getWordById(record.wordId.toLong())
                 if (word != null) {
                     wordList.add(word)
                 }
@@ -50,7 +50,7 @@ class LearningManager(
      * @return 今日学习数量
      */
     fun getTodayLearningCount(listId: Int): Flow<Int> {
-        return learningRecordDao.getTodayLearningCount(listId)
+        return learningRecordDao.getTodayLearningCount(listId.toLong())
     }
 
     /**
@@ -60,7 +60,7 @@ class LearningManager(
      * @return 今日复习数量
      */
     fun getTodayReviewCount(listId: Int): Flow<Int> {
-        return learningRecordDao.getTodayReviewCount(listId)
+        return learningRecordDao.getTodayReviewCountFlow(listId.toLong())
     }
 
     /**

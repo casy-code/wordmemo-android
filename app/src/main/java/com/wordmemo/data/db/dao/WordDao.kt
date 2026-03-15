@@ -40,6 +40,12 @@ interface WordDao {
     @Query("SELECT * FROM words ORDER BY content ASC")
     fun getAllWordsFlow(): Flow<List<Word>>
 
+    @Query("SELECT w.* FROM words w INNER JOIN word_list_items wli ON w.id = wli.wordId WHERE wli.listId = :listId ORDER BY w.content ASC")
+    fun getWordsByListIdFlow(listId: Int): Flow<List<Word>>
+
+    @Query("SELECT w.* FROM words w INNER JOIN word_list_items wli ON w.id = wli.wordId WHERE wli.listId = :listId ORDER BY w.content ASC")
+    suspend fun getWordsByListId(listId: Int): List<Word>
+
     @Query("SELECT * FROM words WHERE difficulty = :difficulty ORDER BY content ASC")
     fun getWordsByDifficultyFlow(difficulty: Int): Flow<List<Word>>
 

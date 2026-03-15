@@ -97,14 +97,12 @@ class WordListTest {
             id = 1,
             name = "CET-4",
             description = "College English Test Level 4",
-            wordCount = 100,
             type = "preset"
         )
         
         assertEquals(1, wordList.id)
         assertEquals("CET-4", wordList.name)
         assertEquals("College English Test Level 4", wordList.description)
-        assertEquals(100, wordList.wordCount)
         assertEquals("preset", wordList.type)
     }
 
@@ -118,7 +116,6 @@ class WordListTest {
         assertEquals(0, wordList.id)
         assertEquals("Custom", wordList.name)
         assertEquals("My custom list", wordList.description)
-        assertEquals(0, wordList.wordCount)
         assertEquals("custom", wordList.type)
         assertTrue(wordList.createdAt > 0)
     }
@@ -128,15 +125,14 @@ class WordListTest {
         val wordList = WordList(
             id = 1,
             name = "CET-4",
-            description = "四级",
-            wordCount = 100
+            description = "四级"
         )
         
-        val copied = wordList.copy(wordCount = 150)
+        val copied = wordList.copy(description = "四级词汇")
         
         assertEquals(1, copied.id)
         assertEquals("CET-4", copied.name)
-        assertEquals(150, copied.wordCount)
+        assertEquals("四级词汇", copied.description)
     }
 }
 
