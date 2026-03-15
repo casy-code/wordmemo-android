@@ -74,15 +74,25 @@ cd wordmemo-android
 ./gradlew test
 ```
 
-### 集成测试
+### 仪器化测试（需模拟器或真机）
+
+**前置条件**：启动 Android 模拟器或连接真机（开启 USB 调试）
+
 ```bash
-./gradlew connectedAndroidTest
+# 方式一：使用脚本（自动检测 ANDROID_HOME 和设备）
+./scripts/run-instrumented-tests.sh
+
+# 方式二：直接运行 Gradle 任务
+./gradlew connectedDebugAndroidTest
 ```
 
-### 性能测试
-```bash
-./gradlew connectedAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.wordmemo.performance.PerformanceTest
-```
+**启动模拟器**：
+- Android Studio → Device Manager → 选择 AVD → 启动
+- 或命令行：`emulator -avd <AVD名称>`（需先通过 AVD Manager 创建）
+
+**验证设备**：`adb devices`
+
+测试报告：`app/build/reports/androidTests/connected/index.html`
 
 ## 📈 质量指标
 

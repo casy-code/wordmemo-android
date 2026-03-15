@@ -249,6 +249,13 @@ class PerformanceTest {
 
     @Test
     fun testUpdatePerformance() = runBlocking {
+        // 创建外键依赖：100 个单词和 1 个词库
+        val words = (1..100).map { i ->
+            Word(content = "perf$i", translation = "性能$i", difficulty = 1)
+        }
+        wordDao.insertAll(words)
+        wordListDao.insert(WordList(name = "Perf List", type = "preset"))
+
         // 创建学习记录
         val records = (1..100).map { i ->
             LearningRecord(

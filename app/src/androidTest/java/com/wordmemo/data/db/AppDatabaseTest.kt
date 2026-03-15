@@ -90,6 +90,7 @@ class AppDatabaseTest {
         // 4. 创建学习记录（2 个未来复习，1 个今日到期）
         val now = System.currentTimeMillis()
         val tomorrow = now + 86400000
+        val yesterday = now - 86400000
         val listIdLong = listId.toLong()
         val records = listOf(
             LearningRecord(
@@ -98,7 +99,8 @@ class AppDatabaseTest {
                 quality = 4,
                 interval = 1,
                 easeFactor = 2.5,
-                nextReviewDate = tomorrow
+                nextReviewDate = tomorrow,
+                reviewedAt = yesterday  // 昨日复习，不计入今日
             ),
             LearningRecord(
                 wordId = requireNotNull(word2).id,
@@ -106,7 +108,8 @@ class AppDatabaseTest {
                 quality = 3,
                 interval = 1,
                 easeFactor = 2.5,
-                nextReviewDate = tomorrow
+                nextReviewDate = tomorrow,
+                reviewedAt = yesterday  // 昨日复习，不计入今日
             ),
             LearningRecord(
                 wordId = requireNotNull(word3).id,
@@ -114,7 +117,8 @@ class AppDatabaseTest {
                 quality = 0,
                 interval = 0,
                 easeFactor = 2.5,
-                nextReviewDate = now - 1000  // 明确设为过去，确保被 getDueRecords 命中
+                nextReviewDate = now - 1000,  // 明确设为过去，确保被 getDueRecords 命中
+                reviewedAt = now  // 今日复习，计入今日复习数
             )
         )
         learningRecordDao.insertAll(records)

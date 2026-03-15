@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
@@ -116,41 +115,37 @@ class LearningFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        // 观察当前单词
-        // viewModel.currentWord.observe(viewLifecycleOwner) { word ->
-        //     updateCardUI(word)
-        // }
-
-        // 观察卡片翻转状态
-        // viewModel.isCardFlipped.observe(viewLifecycleOwner) { isFlipped ->
-        //     updateCardFlip(isFlipped)
-        // }
+        // 观察当前单词 - 在 tv_content 中展示
+        viewModel?.currentWord?.observe(viewLifecycleOwner) { word ->
+            val tv = binding.root.findViewById<TextView>(R.id.tv_content)
+            tv?.text = when {
+                word != null -> "${word.content}\n\n${word.translation}"
+                else -> "待学习单词将在此显示"
+            }
+        }
 
         // 观察反馈消息
-        // viewModel.feedbackMessage.observe(viewLifecycleOwner) { message ->
-        //     if (message.isNotEmpty()) {
-        //         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-        //         viewModel.clearFeedbackMessage()
-        //     }
-        // }
+        viewModel?.feedbackMessage?.observe(viewLifecycleOwner) { message ->
+            if (!message.isNullOrEmpty()) {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                // 词库为空时在主区域显示提示
+                if (message == "词库中没有单词") {
+                    binding.root.findViewById<TextView>(R.id.tv_content)?.text =
+                        "词库中没有单词\n\n请先在「词库」中添加单词到学习列表"
+                }
+                viewModel?.clearFeedbackMessage()
+            }
+        }
 
-        // 观察学习统计
-        // viewModel.learningStatistics.observe(viewLifecycleOwner) { stats ->
-        //     updateStatistics(stats)
-        // }
+        // 观察学习完成状态（仅当有单词且学完时更新，词库为空时由 feedbackMessage 处理）
+        viewModel?.isLearningComplete?.observe(viewLifecycleOwner) { isComplete ->
+            if (isComplete && (viewModel?.getTotalWords() ?: 0) > 0) {
+                val tv = binding.root.findViewById<TextView>(R.id.tv_content)
+                val msg = viewModel?.feedbackMessage?.value
+                tv?.text = msg?.takeIf { it.isNotEmpty() } ?: "今日学习已完成！"
+            }
+        }
 
-        // 观察学习完成状态
-        // viewModel.isLearningComplete.observe(viewLifecycleOwner) { isComplete ->
-        //     if (isComplete) {
-        //         showLearningCompleteDialog()
-        //     }
-        // }
-
-        // 观察加载状态
-        // viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-        //     binding.root.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
-        //         if (isLoading) View.VISIBLE else View.GONE
-        // }
     }
 
     override fun onDestroyView() {

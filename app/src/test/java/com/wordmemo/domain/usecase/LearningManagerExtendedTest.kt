@@ -4,7 +4,6 @@ import com.wordmemo.data.db.dao.LearningRecordDao
 import com.wordmemo.data.db.dao.WordDao
 import com.wordmemo.data.entity.LearningRecord
 import com.wordmemo.data.entity.Word
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -57,8 +56,8 @@ class LearningManagerExtendedTest {
             reviewedAt = System.currentTimeMillis()
         )
 
-        whenever(learningRecordDao.getDueRecordsFlow(eq(1L), any())).thenReturn(
-            flowOf(listOf(record1, record2))
+        whenever(learningRecordDao.getDueRecords(eq(1L), any())).thenReturn(
+            listOf(record1, record2)
         )
         whenever(wordDao.getWordById(1L)).thenReturn(word1)
         whenever(wordDao.getWordById(2L)).thenReturn(word2)
@@ -74,7 +73,7 @@ class LearningManagerExtendedTest {
     @Test
     fun testGetReviewDueWords_Empty() {
         runBlocking {
-        whenever(learningRecordDao.getDueRecordsFlow(eq(1L), any())).thenReturn(flowOf(emptyList()))
+        whenever(learningRecordDao.getDueRecords(eq(1L), any())).thenReturn(emptyList())
 
             val result = learningManager.getReviewDueWords(1)
             assert(result.isEmpty())

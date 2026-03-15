@@ -2,12 +2,15 @@ package com.wordmemo.di
 
 import android.content.Context
 import com.wordmemo.data.db.AppDatabase
+import com.wordmemo.data.preset.DatabaseSeeder
 import com.wordmemo.domain.usecase.LearningManager
 import com.wordmemo.domain.usecase.LearningUseCase
+import kotlinx.coroutines.runBlocking
 
 /**
  * 应用级依赖容器
  * 提供 DAO、UseCase 等单例
+ * 首次启动时自动插入 5 分类共 500 个预设单词
  */
 class AppContainer(context: Context) {
 
@@ -15,7 +18,14 @@ class AppContainer(context: Context) {
 
     val wordDao = database.wordDao()
     val wordListDao = database.wordListDao()
+    val wordListItemDao = database.wordListItemDao()
     val learningRecordDao = database.learningRecordDao()
+
+    init {
+        runBlocking {
+            DatabaseSeeder.seedIfNeeded(wordListDao, wordDao, wordListItemDao)
+        }
+    }
 
     private val learningManager = LearningManager(wordDao, learningRecordDao)
 

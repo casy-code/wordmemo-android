@@ -22,33 +22,35 @@ class LearningRecordDaoTest {
     private lateinit var learningRecordDao: LearningRecordDao
 
     @Before
-    fun setUp() = runBlocking {
-        database = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext(),
-            AppDatabase::class.java
-        )
-            .addCallback(object : androidx.room.RoomDatabase.Callback() {
-                override fun onOpen(db: SupportSQLiteDatabase) {
-                    super.onOpen(db)
-                    db.execSQL("PRAGMA foreign_keys=ON")
-                }
-            })
-            .allowMainThreadQueries()
-            .build()
-
-        learningRecordDao = database.learningRecordDao()
-        // 插入外键依赖的 Word 和 WordList
-        database.wordDao().insertAll(
-            listOf(
-                Word(content = "w1", translation = "t1"),
-                Word(content = "w2", translation = "t2"),
-                Word(content = "w3", translation = "t3"),
-                Word(content = "w4", translation = "t4"),
-                Word(content = "w5", translation = "t5")
+    fun setUp() {
+        runBlocking {
+            database = Room.inMemoryDatabaseBuilder(
+                ApplicationProvider.getApplicationContext(),
+                AppDatabase::class.java
             )
-        )
-        database.wordListDao().insert(WordList(name = "list1", type = "preset"))
-        database.wordListDao().insert(WordList(name = "list2", type = "preset"))
+                .addCallback(object : androidx.room.RoomDatabase.Callback() {
+                    override fun onOpen(db: SupportSQLiteDatabase) {
+                        super.onOpen(db)
+                        db.execSQL("PRAGMA foreign_keys=ON")
+                    }
+                })
+                .allowMainThreadQueries()
+                .build()
+
+            learningRecordDao = database.learningRecordDao()
+            // 插入外键依赖的 Word 和 WordList
+            database.wordDao().insertAll(
+                listOf(
+                    Word(content = "w1", translation = "t1"),
+                    Word(content = "w2", translation = "t2"),
+                    Word(content = "w3", translation = "t3"),
+                    Word(content = "w4", translation = "t4"),
+                    Word(content = "w5", translation = "t5")
+                )
+            )
+            database.wordListDao().insert(WordList(name = "list1", type = "preset"))
+            database.wordListDao().insert(WordList(name = "list2", type = "preset"))
+        }
     }
 
     @After

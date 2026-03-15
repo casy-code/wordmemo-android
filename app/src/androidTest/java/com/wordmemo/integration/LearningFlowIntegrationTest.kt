@@ -115,6 +115,9 @@ class LearningFlowIntegrationTest {
 
         val word = Word(content = "persist", translation = "持久化", difficulty = 1)
         val wordId = wordDao.insert(word).toInt()
+        database.wordListItemDao().insertAll(
+            listOf(com.wordmemo.data.entity.WordListItem(wordId = wordId, listId = listId))
+        )
 
         // 2. 记录学习反馈
         learningManager.recordLearningFeedback(wordId, listId, 5)
@@ -122,15 +125,13 @@ class LearningFlowIntegrationTest {
         // 3. 获取记录
         val record1 = requireNotNull(learningRecordDao.getRecordByWordAndList(wordId, listId))
         val originalInterval = record1.interval
-        val originalEaseFactor = record1.easeFactor
 
         // 4. 再次学习同一单词
         learningManager.recordLearningFeedback(wordId, listId, 4)
 
-        // 5. 验证数据已更新
+        // 5. 验证数据已更新（quality 5→4 时 interval 增加，easeFactor 可能略降）
         val record2 = requireNotNull(learningRecordDao.getRecordByWordAndList(wordId, listId))
         assertTrue(record2.interval > originalInterval)
-        assertTrue(record2.easeFactor > originalEaseFactor)
 
         // 6. 验证历史数据完整性
         val allRecords = learningRecordDao.getRecordsByListId(listId)
@@ -240,9 +241,8 @@ class LearningFlowIntegrationTest {
         learningManager.recordLearningFeedback(wordId, listId, 4)
         record = requireNotNull(learningRecordDao.getRecordByWordAndList(wordId, listId))
 
-        // 6. 验证恢复后的进度
+        // 6. 验证恢复后的进度（quality 4 从 interval=1 起，easeFactor 可能不变）
         assertTrue(record.interval > 1)
-        assertTrue(record.easeFactor > easeFactor1)
     }
 
     @Test
@@ -279,8 +279,13 @@ class LearningFlowIntegrationTest {
         }
         wordDao.insertAll(words)
 
-        // 2. 学习一些单词
+        // 1.5 将单词关联到词库（getLearningProgress 依赖 word_list_items）
         val allWords = wordDao.getAllWords()
+        database.wordListItemDao().insertAll(
+            allWords.map { com.wordmemo.data.entity.WordListItem(wordId = it.id, listId = listId) }
+        )
+
+        // 2. 学习前 7 个单词
         for (i in 0 until 7) {
             learningManager.recordLearningFeedback(allWords[i].id, listId, 4)
         }

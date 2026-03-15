@@ -29,18 +29,10 @@ class LearningManager(
      */
     suspend fun getReviewDueWords(listId: Int): List<Word> {
         val currentTime = System.currentTimeMillis()
-        val wordList = mutableListOf<Word>()
-        
-        learningRecordDao.getDueRecordsFlow(listId.toLong(), currentTime).collect { records ->
-            for (record in records) {
-                val word = wordDao.getWordById(record.wordId.toLong())
-                if (word != null) {
-                    wordList.add(word)
-                }
-            }
+        val records = learningRecordDao.getDueRecords(listId.toLong(), currentTime)
+        return records.mapNotNull { record ->
+            wordDao.getWordById(record.wordId.toLong())
         }
-        
-        return wordList
     }
 
     /**
